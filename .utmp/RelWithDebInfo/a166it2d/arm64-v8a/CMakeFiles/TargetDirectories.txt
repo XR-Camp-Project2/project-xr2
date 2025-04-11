@@ -1,0 +1,5 @@
+D:/XR-Project2-Team3/project-xr2/.utmp/RelWithDebInfo/a166it2d/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/XR-Project2-Team3/project-xr2/.utmp/RelWithDebInfo/a166it2d/arm64-v8a/CMakeFiles/rebuild_cache.dir
+D:/XR-Project2-Team3/project-xr2/.utmp/RelWithDebInfo/a166it2d/arm64-v8a/GameActivity/CMakeFiles/game.dir
+D:/XR-Project2-Team3/project-xr2/.utmp/RelWithDebInfo/a166it2d/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+D:/XR-Project2-Team3/project-xr2/.utmp/RelWithDebInfo/a166it2d/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir
