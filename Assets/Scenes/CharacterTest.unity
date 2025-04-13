@@ -183,10 +183,30 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -6652725513331149018, guid: 9c39cb93481e5ec46b59183561c4c6ae, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b1cd638905b29684183d9165f4eddd6c, type: 2}
+    - target: {fileID: -5453718785326181456, guid: 9c39cb93481e5ec46b59183561c4c6ae, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 38b82fb56c4067c4ba18d81733b47507, type: 2}
+    - target: {fileID: -3405996087953144262, guid: 9c39cb93481e5ec46b59183561c4c6ae, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2fee10ca528608c46b7c2c412c8063e4, type: 2}
     - target: {fileID: 919132149155446097, guid: 9c39cb93481e5ec46b59183561c4c6ae, type: 3}
       propertyPath: m_Name
       value: Hatsune51 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2803436535603912181, guid: 9c39cb93481e5ec46b59183561c4c6ae, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2cb6d9313675fcf418940c0250159fe9, type: 2}
+    - target: {fileID: 3889123938455600210, guid: 9c39cb93481e5ec46b59183561c4c6ae, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2fee10ca528608c46b7c2c412c8063e4, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -240,10 +260,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7918335002988649766, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7fd97f22cfdf7764ab4e10a557718f32, type: 2}
+    - target: {fileID: -6781638406143588763, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b4ea0065ac1d64e44b19e14f698df3df, type: 2}
+    - target: {fileID: -6652725513331149018, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b4d63e0120776df49960a295f1a67db3, type: 2}
+    - target: {fileID: -5453718785326181456, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ca515ad0eab4ec9498712d3b73865e43, type: 2}
+    - target: {fileID: -3778914278571476998, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b4ea0065ac1d64e44b19e14f698df3df, type: 2}
     - target: {fileID: 919132149155446097, guid: 369c342cde179394babed5095859ece3, type: 3}
       propertyPath: m_Name
       value: Hatsune52
       objectReference: {fileID: 0}
+    - target: {fileID: 3889123938455600210, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b4ea0065ac1d64e44b19e14f698df3df, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
