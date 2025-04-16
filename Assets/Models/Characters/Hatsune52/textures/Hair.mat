@@ -351,7 +351,7 @@ Material:
     - _Bump2ndScale: 1
     - _BumpScale: 1
     - _ColorMask: 15
-    - _Cull: 2
+    - _Cull: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DissolveNoiseStrength: 0.1
@@ -528,7 +528,7 @@ Material:
     - _OutlineVectorScale: 1
     - _OutlineVectorUVMode: 0
     - _OutlineVertexR2Width: 0
-    - _OutlineWidth: 0.001
+    - _OutlineWidth: 0.01
     - _OutlineZBias: 0
     - _OutlineZClip: 1
     - _OutlineZTest: 2
