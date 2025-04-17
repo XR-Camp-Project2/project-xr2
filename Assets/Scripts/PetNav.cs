@@ -1,19 +1,22 @@
 using Unity.AI.Navigation;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class PetNav : MonoBehaviour
 {
     public float wanderRadius = 10f;
-    public float wanderTimer = 5f;
+    public float wanderTimer = 2f;
 
     private NavMeshAgent agent;
+    private Animator animator;
     private float timer;
 
     void OnEnable()
     {
         agent = GetComponent<NavMeshAgent>();
         timer = wanderTimer;
+        animator = transform.GetChild(0).gameObject.GetComponent<Animator>();
     }
 
     private void Start()
@@ -28,6 +31,15 @@ public class PetNav : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
+
+        if (agent.velocity.sqrMagnitude > 0.1f)
+        {
+            animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+        }
 
         if (timer >= wanderTimer)
         {
