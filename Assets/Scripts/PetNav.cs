@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.AI.Navigation;
 using Unity.XR.CoreUtils;
 using UnityEngine;
