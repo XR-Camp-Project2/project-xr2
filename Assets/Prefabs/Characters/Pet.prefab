@@ -85,8 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfdcb0b32d8afec40b1741e9be6c1e9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wanderRadius: 10
-  wanderTimer: 5
+  wanderRadius: 20
 --- !u!195 &6359123184337626690
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -123,7 +122,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369c342cde179394babed5095859ece3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.67
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369c342cde179394babed5095859ece3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -185,6 +184,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: b4ea0065ac1d64e44b19e14f698df3df, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: d6d4ab69892de764795e65316215ebbe, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 369c342cde179394babed5095859ece3, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
