@@ -1,6 +1,6 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 using Unity.AI.Navigation;
-using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,17 +8,18 @@ public class PetNav : MonoBehaviour
 {
     public float wanderRadius = 10f;
     public float wanderTimer = 5f;
-    public NavMeshModifier NavMeshModifier;
 
     private NavMeshAgent agent;
     private Animator animator;
     private float timer;
+    private Pet pet;
 
     void OnEnable()
     {
         agent = GetComponent<NavMeshAgent>();
         timer = wanderTimer;
         animator = transform.GetChild(0).gameObject.GetComponent<Animator>();
+        this.pet = GetComponent<Pet>();
     }
 
     private void Start()
@@ -30,10 +31,8 @@ public class PetNav : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
-        timer += Time.deltaTime;
-
         if (agent.velocity.sqrMagnitude > 0.1f)
         {
             animator.SetBool("isWalking", true);
@@ -42,12 +41,20 @@ public class PetNav : MonoBehaviour
         {
             animator.SetBool("isWalking", false);
         }
+    }
 
-        if (timer >= wanderTimer)
+    public Vector3 findNextInstrestdPoint()
+    {
+        return RandomNavSphere(transform.position, wanderRadius, -1);
+    }
+
+    public async UniTask moveToRandomPoint(CancellationToken ct)
+    {
+        var newPos = this.findNextInstrestdPoint();
+        agent.SetDestination(newPos);
+        while (agent.pathPending || agent.remainingDistance > 0.1f)
         {
-            Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
-            agent.SetDestination(newPos);
-            timer = 0;
+            await UniTask.Yield(ct);
         }
     }
 

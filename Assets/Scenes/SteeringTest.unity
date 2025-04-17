@@ -1016,6 +1016,9 @@ PrefabInstance:
     - target: {fileID: 4437179032599926390, guid: b386f3fd5eb73754e94fc245282bd453, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
+    - target: {fileID: 4469454809856100033, guid: b386f3fd5eb73754e94fc245282bd453, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4484891553661484420, guid: b386f3fd5eb73754e94fc245282bd453, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1070,9 +1073,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7743817877884381223, guid: b386f3fd5eb73754e94fc245282bd453, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743817877884381223, guid: b386f3fd5eb73754e94fc245282bd453, type: 3}
       propertyPath: wanderRadius
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 7743817877884381223, guid: b386f3fd5eb73754e94fc245282bd453, type: 3}
+      propertyPath: NavMeshModifier
+      value: 
+      objectReference: {fileID: 865074764}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
