@@ -7,7 +7,8 @@ using UnityEngine.AI;
 public class PetNav : MonoBehaviour
 {
     public float wanderRadius = 10f;
-    public float wanderTimer = 2f;
+    public float wanderTimer = 5f;
+    public NavMeshModifier NavMeshModifier;
 
     private NavMeshAgent agent;
     private Animator animator;
@@ -22,11 +23,11 @@ public class PetNav : MonoBehaviour
 
     private void Start()
     {
-        //var surfaces = GameObject.FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
-        //foreach (var surface in surfaces)
-        //{
-        //    surface.BuildNavMesh();
-        //}
+        var surfaces = GameObject.FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
+        foreach (var surface in surfaces)
+        {
+            surface.BuildNavMesh();
+        }
     }
 
     void Update()
