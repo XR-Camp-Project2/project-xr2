@@ -1,37 +1,34 @@
+using Cysharp.Threading.Tasks;
+using System.Threading;
 using Unity.AI.Navigation;
-using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class PetNav : MonoBehaviour
 {
-    public float wanderRadius = 10f;
-    public float wanderTimer = 2f;
+    [SerializeField]
+    private float wanderRadius = 10f;
 
     private NavMeshAgent agent;
     private Animator animator;
-    private float timer;
 
     void OnEnable()
     {
         agent = GetComponent<NavMeshAgent>();
-        timer = wanderTimer;
         animator = transform.GetChild(0).gameObject.GetComponent<Animator>();
     }
 
     private void Start()
     {
-        //var surfaces = GameObject.FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
-        //foreach (var surface in surfaces)
-        //{
-        //    surface.BuildNavMesh();
-        //}
+        var surfaces = GameObject.FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None);
+        foreach (var surface in surfaces)
+        {
+            surface.BuildNavMesh();
+        }
     }
 
-    void Update()
+    private void Update()
     {
-        timer += Time.deltaTime;
-
         if (agent.velocity.sqrMagnitude > 0.1f)
         {
             animator.SetBool("isWalking", true);
@@ -40,13 +37,21 @@ public class PetNav : MonoBehaviour
         {
             animator.SetBool("isWalking", false);
         }
+    }
 
-        if (timer >= wanderTimer)
-        {
-            Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
-            agent.SetDestination(newPos);
-            timer = 0;
-        }
+    private Vector3 findNextInterestedPoint()
+    {
+        return RandomNavSphere(transform.position, wanderRadius, -1);
+    }
+
+    public async UniTask moveToRandomPoint(CancellationToken ct)
+    {
+        var newPos = this.findNextInterestedPoint();
+        agent.SetDestination(newPos);
+        await UniTask.WaitUntil(
+            () => agent.pathPending || agent.remainingDistance > 0.1f,
+            cancellationToken: ct
+        );
     }
 
     public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
