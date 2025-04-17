@@ -6,20 +6,16 @@ using UnityEngine.AI;
 
 public class PetNav : MonoBehaviour
 {
-    public float wanderRadius = 10f;
-    public float wanderTimer = 5f;
+    [SerializeField]
+    private float wanderRadius = 10f;
 
     private NavMeshAgent agent;
     private Animator animator;
-    private float timer;
-    private Pet pet;
 
     void OnEnable()
     {
         agent = GetComponent<NavMeshAgent>();
-        timer = wanderTimer;
         animator = transform.GetChild(0).gameObject.GetComponent<Animator>();
-        this.pet = GetComponent<Pet>();
     }
 
     private void Start()
@@ -52,10 +48,10 @@ public class PetNav : MonoBehaviour
     {
         var newPos = this.findNextInstrestdPoint();
         agent.SetDestination(newPos);
-        while (agent.pathPending || agent.remainingDistance > 0.1f)
-        {
-            await UniTask.Yield(ct);
-        }
+        await UniTask.WaitUntil(
+            () => agent.pathPending || agent.remainingDistance > 0.1f,
+            cancellationToken: ct
+        );
     }
 
     public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
