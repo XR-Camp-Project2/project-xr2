@@ -128,7 +128,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 865074763}
-  - component: {fileID: 865074762}
   - component: {fileID: 865074764}
   m_Layer: 0
   m_Name: NavMesh Modifier Volume
@@ -137,23 +136,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &865074762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 865074761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SerializedVersion: 0
-  m_Size: {x: 33.34285, y: 10.656255, z: 35.50958}
-  m_Center: {x: -9.737597, y: 4.8281274, z: 8.433744}
-  m_Area: 0
-  m_AffectedAgents: ffffffff
 --- !u!4 &865074763
 Transform:
   m_ObjectHideFlags: 0
