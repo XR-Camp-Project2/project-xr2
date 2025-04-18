@@ -54,6 +54,15 @@ public class PetNav : MonoBehaviour
         );
     }
 
+    public async UniTask MoveTo(Transform target, CancellationToken ct)
+    {
+        agent.SetDestination(target.position);
+        await UniTask.WaitUntil(
+            () => agent.pathPending || agent.remainingDistance > 0.1f,
+            cancellationToken: ct
+        );
+    }
+
     public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
     {
         Vector3 randomDirection = Random.insideUnitSphere * dist;
