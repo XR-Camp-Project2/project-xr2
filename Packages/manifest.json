@@ -2,6 +2,7 @@
   "dependencies": {
     "com.cysharp.unitask": "2.5.10",
     "com.github-glitchenzo.nugetforunity": "4.3.0",
+    "com.meta.xr.sdk.all": "74.0.3",
     "com.unity.ai.navigation": "2.0.7",
     "com.unity.animation.rigging": "1.3.0",
     "com.unity.collab-proxy": "2.7.1",
