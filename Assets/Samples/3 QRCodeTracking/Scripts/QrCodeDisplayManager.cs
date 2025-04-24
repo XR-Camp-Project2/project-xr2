@@ -154,8 +154,7 @@ public class QrCodeDisplayManager : MonoBehaviour
                 var animator = _spawnedCharacter.GetComponent<Animator>();
                 if (animator != null)
                 {
-                    animator.SetTrigger("SpawnAnimation");
-                    StartCoroutine(WaitForAnimationToComplete(animator, "Spawn"));
+                    StartCoroutine(WaitForAnimationToComplete(animator, "Appear"));
                 }
                 else
                 {
@@ -204,12 +203,14 @@ public class QrCodeDisplayManager : MonoBehaviour
             
             yield return null; // 等待下一幀
         } 
-        while (stateInfo.normalizedTime < 1.0f); // 當normalizedTime >= 1時，表示動畫播放完成
+        while (stateInfo.normalizedTime < 0.95f); // 當normalizedTime >= 1時，表示動畫播放完成
         
         // 動畫完成
         _animationCompleted = true;
         _isSpawningCharacter = false;
         
+        animator.ResetTrigger("stopApeear");
+        animator.SetTrigger("stopApeear");
         Debug.Log("Character spawn animation completed!");
     }
 #endif
