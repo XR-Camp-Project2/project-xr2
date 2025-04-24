@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+  <Tracking>
+    <ImageTarget name="model_processed_for_vuforia" size="0.210000 0.253448" />
+  </Tracking>
+</QCARConfig>

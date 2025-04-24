@@ -1,4 +1,16 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.github-glitchenzo.nugetforunity",
+        "com.cysharp.unitask",
+        "com.cysharp.r3",
+        "jp.hadashikick.vcontainer"
+      ]
+    }
+  ],
   "dependencies": {
     "com.cysharp.unitask": "2.5.10",
     "com.github-glitchenzo.nugetforunity": "4.3.0",
@@ -52,17 +64,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "scopedRegistries": [
-    {
-      "name": "package.openupm.com",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.github-glitchenzo.nugetforunity",
-        "com.cysharp.unitask",
-        "com.cysharp.r3",
-        "jp.hadashikick.vcontainer"
-      ]
-    }
-  ]
+  }
 }
