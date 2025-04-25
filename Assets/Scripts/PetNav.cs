@@ -10,12 +10,11 @@ public class PetNav : MonoBehaviour
     private float wanderRadius = 10f;
 
     private NavMeshAgent agent;
-    private Animator animator;
+    public Vector3 Velocity => this.agent.velocity;
 
     void OnEnable()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = transform.GetChild(0).gameObject.GetComponent<Animator>();
     }
 
     private void Start()
@@ -26,19 +25,6 @@ public class PetNav : MonoBehaviour
             surface.BuildNavMesh();
         }
     }
-
-    private void Update()
-    {
-        if (agent.velocity.sqrMagnitude > 0.1f)
-        {
-            animator.SetBool("isWalking", true);
-        }
-        else
-        {
-            animator.SetBool("isWalking", false);
-        }
-    }
-
     private Vector3 findNextInterestedPoint()
     {
         return RandomNavSphere(transform.position, wanderRadius, -1);
@@ -49,7 +35,7 @@ public class PetNav : MonoBehaviour
         var newPos = this.findNextInterestedPoint();
         agent.SetDestination(newPos);
         await UniTask.WaitUntil(
-            () => agent.pathPending || agent.remainingDistance > 0.1f,
+            () => agent.pathPending || agent.remainingDistance < 0.1f,
             cancellationToken: ct
         );
     }
@@ -58,7 +44,7 @@ public class PetNav : MonoBehaviour
     {
         agent.SetDestination(target.position);
         await UniTask.WaitUntil(
-            () => agent.pathPending || agent.remainingDistance > 0.1f,
+            () => agent.pathPending || agent.remainingDistance < 0.1f,
             cancellationToken: ct
         );
     }

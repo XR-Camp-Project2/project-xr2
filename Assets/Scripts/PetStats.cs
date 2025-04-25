@@ -6,4 +6,6 @@ public class PetStats : ScriptableObject
     public string PetName;
     public int Health;
     public int Hunger;
+
+    public int Happiness;
 }
