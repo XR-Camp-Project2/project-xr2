@@ -28,7 +28,7 @@ public class MCPObjectRead : MonoBehaviour {
     }
 
     IEnumerator RequestLLMDescription(string objectName) {
-        string url = "http://localhost:3000/describe";
+        string url = "https://xr2-mcp-server.onrender.com/describe";
         WWWForm form = new WWWForm();
         form.AddField("name", objectName);
 
