@@ -68,6 +68,33 @@ public class Pet : MonoBehaviour
         }
     }
 
+    private class UpsetAction : PetAction
+    {
+        private Pet pet;
+
+        public void Setup(Pet pet)
+        {
+            this.pet = pet;
+        }
+
+        public float CalculateUtility()
+        {
+            return 100 - this.pet.petStats.Happiness;
+        }
+
+        public async UniTask Execute(CancellationToken token)
+        {
+            var src = new TimeBasedEscapeTokenSource(token);
+            this.pet.stateMachine.Fire(Trigger.Upset);
+            while (!src.IsCancelled)
+            {
+                await UniTask.Delay(1000, cancellationToken: token);
+                this.pet.petStats.Happiness += 2;
+            }
+            this.pet.stateMachine.Fire(Trigger.Recover);
+        }
+    }
+
     private class SleepAction : PetAction
     {
         private Pet pet;
@@ -111,7 +138,7 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
-            return this.pet.petStats.Health;
+            return this.pet.petStats.Health + (50 - this.pet.petStats.Hunger);
         }
 
         public async UniTask Execute(CancellationToken token)
@@ -127,6 +154,7 @@ public class Pet : MonoBehaviour
         Grabbed,
         Eating,
         Sleep,
+        Upset    // new
     }
 
     public enum Trigger
@@ -138,6 +166,8 @@ public class Pet : MonoBehaviour
         FinishEating,
         GotoSleep,
         WakeUp,
+        Upset,   // new
+        Recover  // new
     }
 
     public PetStats petStats;
@@ -159,10 +189,9 @@ public class Pet : MonoBehaviour
 
     private async UniTaskVoid Start()
     {
-        this.petStats.Health = 100;
-        this.petStats.Hunger = 0;
         this.petNav = GetComponent<PetNav>();
         this.xrOrigin = FindFirstObjectByType<XROrigin>();
+        this.setupStats();
         this.setupStateMachine();
         this.subscribeHandGestureEvents();
 
@@ -175,11 +204,21 @@ public class Pet : MonoBehaviour
         var wanderAction = new WanderAction();
         wanderAction.Setup(this);
         this.actions.Add(wanderAction);
+        var upsetAction = new UpsetAction();
+        upsetAction.Setup(this);
+        this.actions.Add(upsetAction);
 
         await UniTask.WhenAll(
             this.stateMachineLoop(),
             this.updatePetStats()
         );
+    }
+
+    private void setupStats()
+    {
+        this.petStats.Health = 100;
+        this.petStats.Hunger = 0;
+        this.petStats.Happiness = 100;
     }
 
     private void setupStateMachine()
@@ -192,20 +231,31 @@ public class Pet : MonoBehaviour
             .Permit(Trigger.Follow, State.Following)
             .Permit(Trigger.Grab, State.Grabbed)
             .Permit(Trigger.Eat, State.Eating)
-            .Permit(Trigger.GotoSleep, State.Sleep);
+            .Permit(Trigger.GotoSleep, State.Sleep)
+            .Permit(Trigger.Upset, State.Upset);
+
         this.stateMachine.Configure(State.Sleep)
             .OnEntry(() => { Debug.Log("Entering Sleep state"); })
             .SubstateOf(State.Idle)
-            .Permit(Trigger.WakeUp, State.Idle);
+            .Permit(Trigger.WakeUp, State.Idle)
+            .Permit(Trigger.Upset, State.Upset);
+        this.stateMachine.Configure(State.Upset)
+            .OnEntry(() => Debug.Log("Entering Upset state"))
+            .SubstateOf(State.Idle)
+            .Permit(Trigger.Recover, State.Idle);
 
         this.stateMachine.Configure(State.Following)
             .OnEntry(() => { Debug.Log("Entering Following state"); })
             .Permit(Trigger.StopFollowing, State.Idle)
             .Permit(Trigger.Grab, State.Grabbed)
-            .Permit(Trigger.Eat, State.Eating);
+            .Permit(Trigger.Eat, State.Eating)
+            .Permit(Trigger.Upset, State.Upset);
+
         this.stateMachine.Configure(State.Eating)
             .OnEntry(() => { Debug.Log("Entering Eating state"); })
-            .Permit(Trigger.FinishEating, State.Idle);
+            .Permit(Trigger.FinishEating, State.Idle)
+            .Permit(Trigger.Upset, State.Upset);
+
     }
 
     private void subscribeHandGestureEvents()
@@ -306,6 +356,11 @@ public class Pet : MonoBehaviour
             {
                 this.petStats.Health = 0;
             }
+
+            if (this.flip(0.1f))
+            {
+                this.petStats.Happiness -= 1;
+            }
         }
     }
 
@@ -341,5 +396,10 @@ public class Pet : MonoBehaviour
             }
         }
         return values.Length - 1; // Fallback in case of rounding errors
+    }
+
+    private bool flip(float probability)
+    {
+        return Random.Range(0f, 1f) < probability;
     }
 }

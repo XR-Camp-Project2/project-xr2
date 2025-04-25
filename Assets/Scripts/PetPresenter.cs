@@ -37,6 +37,7 @@ public class PetPresenter : MonoBehaviour
         this.animator.SetBool("isWalking", isMoving);
         this.animator.SetBool("isCrawlingIdle", !isMoving);
         this.animator.SetBool("isSleeping", this.pet.StateMachine.State == Pet.State.Sleep);
+        this.animator.SetBool("isUpset", this.pet.StateMachine.State == Pet.State.Upset);
     }
 
     private async UniTaskVoid randomlyEnterCrawlingState()
