@@ -9,6 +9,37 @@ using System.Linq;
 
 public class Pet : MonoBehaviour
 {
+    private class TimeBasedEscapeTokenSource
+    {
+        private CancellationTokenSource tokenSource;
+        private float startsAt;
+
+        public TimeBasedEscapeTokenSource(CancellationToken token)
+        {
+            this.startsAt = Time.time;
+            this.tokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+            this.checkCancel(token).Forget();
+        }
+
+        private async UniTaskVoid checkCancel(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await UniTask.Delay(1000, cancellationToken: token);
+                float elapsed = Time.time - this.startsAt;
+                // Increase escape probability over time
+                float escapeProbability = Mathf.Clamp01(elapsed * elapsed / 100f);
+                if (Random.Range(0f, 1f) < escapeProbability)
+                {
+                    this.tokenSource.Cancel();
+                    break;
+                }
+            }
+        }
+
+        public bool IsCancelled => this.tokenSource.IsCancellationRequested;
+    }
+
     private interface PetAction
     {
         void Setup(Pet pet);
@@ -19,7 +50,6 @@ public class Pet : MonoBehaviour
     private class StandAction : PetAction
     {
         private Pet pet;
-        private float utility = 0.5f;
 
         public void Setup(Pet pet)
         {
@@ -28,30 +58,19 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
-            return this.utility;
+            return this.pet.petStats.Hunger;
         }
 
         public async UniTask Execute(CancellationToken token)
         {
-            var startsAt = Time.time;
-            while (true)
-            {
-                await UniTask.Delay(1000, cancellationToken: token);
-                float elapsed = Time.time - startsAt;
-                // Increase escape probability over time
-                float escapeProbability = Mathf.Clamp01(elapsed * elapsed / 100f);
-                if (Random.Range(0f, 1f) < escapeProbability)
-                {
-                    break;
-                }
-            }
+            var src = new TimeBasedEscapeTokenSource(token);
+            await UniTask.WaitUntil(() => src.IsCancelled, cancellationToken: token);
         }
     }
 
     private class SleepAction : PetAction
     {
         private Pet pet;
-        private float utility = 0.5f;
 
         public void Setup(Pet pet)
         {
@@ -60,7 +79,7 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
-            return this.utility;
+            return (100 - this.pet.petStats.Health) + this.pet.petStats.Hunger;
         }
 
         public async UniTask Execute(CancellationToken token)
@@ -69,17 +88,12 @@ public class Pet : MonoBehaviour
             // trigger sleep animation
             this.pet.stateMachine.Fire(Trigger.GotoSleep);
 
-            var startsAt = Time.time;
-            while (true)
+            var src = new TimeBasedEscapeTokenSource(token);
+            while (!src.IsCancelled)
             {
                 await UniTask.Delay(1000, cancellationToken: token);
-                float elapsed = Time.time - startsAt;
-                // Increase escape probability over time
-                float escapeProbability = Mathf.Clamp01(elapsed * elapsed / 100f);
-                if (Random.Range(0f, 1f) < escapeProbability)
-                {
-                    break;
-                }
+                // health is increased more when sleeping
+                this.pet.petStats.Health += 5;
             }
 
             this.pet.stateMachine.Fire(Trigger.WakeUp);
@@ -89,7 +103,6 @@ public class Pet : MonoBehaviour
     private class WanderAction : PetAction
     {
         private Pet pet;
-        private float utility = 0.5f;
 
         public void Setup(Pet pet)
         {
@@ -98,7 +111,7 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
-            return this.utility;
+            return this.pet.petStats.Health;
         }
 
         public async UniTask Execute(CancellationToken token)
@@ -127,6 +140,8 @@ public class Pet : MonoBehaviour
         WakeUp,
     }
 
+    public PetStats petStats;
+
     // TODO: DI?
     public StaticHandGesture followGesture;
     public StaticHandGesture teleportGesture;
@@ -144,6 +159,8 @@ public class Pet : MonoBehaviour
 
     private async UniTaskVoid Start()
     {
+        this.petStats.Health = 100;
+        this.petStats.Hunger = 0;
         this.petNav = GetComponent<PetNav>();
         this.xrOrigin = FindFirstObjectByType<XROrigin>();
         this.setupStateMachine();
@@ -159,7 +176,10 @@ public class Pet : MonoBehaviour
         wanderAction.Setup(this);
         this.actions.Add(wanderAction);
 
-        await this.stateMachineLoop();
+        await UniTask.WhenAll(
+            this.stateMachineLoop(),
+            this.updatePetStats()
+        );
     }
 
     private void setupStateMachine()
@@ -227,11 +247,14 @@ public class Pet : MonoBehaviour
         {
             this.stateTransitionTokenSource = CancellationTokenSource.CreateLinkedTokenSource(destroyToken);
 
+            if (this.stateMachine.IsInState(State.Idle))
+            {
+                await this.inIdle();
+                continue;
+            }
+
             switch (this.stateMachine.State)
             {
-                case State.Idle:
-                    await this.inIdle();
-                    break;
                 case State.Following:
                     await this.inFollowing();
                     break;
@@ -250,9 +273,13 @@ public class Pet : MonoBehaviour
         while (!this.stateTransitionToken.IsCancellationRequested)
         {
             var utilities = this.actions.Select(a => a.CalculateUtility()).ToArray();
-            var actionIndex = this.softmaxSample(utilities);
+            var actionIndex = this.softmaxSample(utilities, 3);
             var pickedAction = this.actions[actionIndex];
-            Debug.Log($"Picked action: {pickedAction.GetType().Name} with utility: {utilities[actionIndex]}");
+            for (int i = 0; i < utilities.Length; i++)
+            {
+                Debug.Log($"Action {i}: {this.actions[i].GetType().Name} with utility: {utilities[i]}");
+            }
+            Debug.Log($"Picked action: {pickedAction.GetType().Name}");
             await pickedAction.Execute(this.stateTransitionToken);
         }
     }
@@ -263,20 +290,42 @@ public class Pet : MonoBehaviour
         this.stateMachine.Fire(Trigger.StopFollowing);
     }
 
-    private int softmaxSample(float[] values)
+    private async UniTask updatePetStats()
+    {
+        var destroyToken = this.GetCancellationTokenOnDestroy();
+        while (!destroyToken.IsCancellationRequested)
+        {
+            await UniTask.Delay(1000, cancellationToken: destroyToken);
+            this.petStats.Hunger += 1;
+            this.petStats.Health -= 1;
+            if (this.petStats.Hunger > 100)
+            {
+                this.petStats.Hunger = 100;
+            }
+            if (this.petStats.Health < 0)
+            {
+                this.petStats.Health = 0;
+            }
+        }
+    }
+
+    // Adds a temperature parameter to control "softness" of the softmax.
+    // Lower temperature (<1) makes choices sharper, higher (>1) makes them softer.
+    private int softmaxSample(float[] values, float temperature = 1.0f)
     {
         float max = values.Max();
         float sum = 0f;
+        float[] expValues = new float[values.Length];
         for (int i = 0; i < values.Length; i++)
         {
-            values[i] = Mathf.Exp(values[i] - max);
-            sum += values[i];
+            expValues[i] = Mathf.Exp((values[i] - max) / Mathf.Max(temperature, 1e-6f));
+            sum += expValues[i];
         }
-        for (int i = 0; i < values.Length; i++)
+        for (int i = 0; i < expValues.Length; i++)
         {
-            values[i] /= sum;
+            expValues[i] /= sum;
         }
-        return sampleFromDistribution(values);
+        return sampleFromDistribution(expValues);
     }
 
     private int sampleFromDistribution(float[] values)
