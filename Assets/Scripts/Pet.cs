@@ -11,17 +11,17 @@ public class Pet : MonoBehaviour
     {
         Idle,
         Following,
-        Grabbed, 
-        Eating   
+        Grabbed,
+        Eating
     }
 
     public enum Trigger
     {
         Follow,
         StopFollowing,
-        Grab,         
-        Eat,          
-        FinishEating  
+        Grab,
+        Eat,
+        FinishEating
     }
 
     // TODO: DI?
@@ -29,6 +29,8 @@ public class Pet : MonoBehaviour
     public StaticHandGesture teleportGesture;
     public StaticHandGesture pointAtGesture;
 
+
+    public StateMachine<State, Trigger> StateMachine => this.stateMachine;
     private StateMachine<State, Trigger> stateMachine;
     private CancellationTokenSource stateTransitionTokenSource;
     private CancellationToken stateTransitionToken => this.stateTransitionTokenSource.Token;
@@ -65,7 +67,7 @@ public class Pet : MonoBehaviour
 
     private void subscribeHandGestureEvents()
     {
-        if(this.followGesture == null)
+        if (this.followGesture == null)
         {
             Debug.LogWarning("Follow gesture is not assigned. Skip subscribing.");
         }
@@ -86,7 +88,7 @@ public class Pet : MonoBehaviour
 
         while (!destroyToken.IsCancellationRequested)
         {
-            this.stateTransitionTokenSource  = CancellationTokenSource.CreateLinkedTokenSource(destroyToken);
+            this.stateTransitionTokenSource = CancellationTokenSource.CreateLinkedTokenSource(destroyToken);
 
             switch (this.stateMachine.State)
             {
@@ -108,7 +110,7 @@ public class Pet : MonoBehaviour
 
     private async UniTask inIdle()
     {
-        while(!this.stateTransitionToken.IsCancellationRequested)
+        while (!this.stateTransitionToken.IsCancellationRequested)
         {
             await this.petNav.moveToRandomPoint(this.stateTransitionToken);
             int idleMilliSeconds = Random.Range(500, 1500);
