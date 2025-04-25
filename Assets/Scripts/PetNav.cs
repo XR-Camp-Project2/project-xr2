@@ -35,7 +35,7 @@ public class PetNav : MonoBehaviour
         var newPos = this.findNextInterestedPoint();
         agent.SetDestination(newPos);
         await UniTask.WaitUntil(
-            () => agent.pathPending || agent.remainingDistance > 0.1f,
+            () => agent.pathPending || agent.remainingDistance < 0.1f,
             cancellationToken: ct
         );
     }
@@ -44,7 +44,7 @@ public class PetNav : MonoBehaviour
     {
         agent.SetDestination(target.position);
         await UniTask.WaitUntil(
-            () => agent.pathPending || agent.remainingDistance > 0.1f,
+            () => agent.pathPending || agent.remainingDistance < 0.1f,
             cancellationToken: ct
         );
     }
