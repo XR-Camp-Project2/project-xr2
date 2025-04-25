@@ -79,6 +79,10 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
+            if (this.pet.flip(0.1f))
+            {
+                return 300;
+            }
             return 100 - this.pet.petStats.Happiness;
         }
 
@@ -92,6 +96,30 @@ public class Pet : MonoBehaviour
                 this.pet.petStats.Happiness += 2;
             }
             this.pet.stateMachine.Fire(Trigger.Recover);
+        }
+    }
+
+    private class SquatAction : PetAction
+    {
+        private Pet pet;
+
+        public void Setup(Pet pet)
+        {
+            this.pet = pet;
+        }
+
+        public float CalculateUtility()
+        {
+            return 100 - this.pet.petStats.Happiness;
+        }
+
+        public async UniTask Execute(CancellationToken token)
+        {
+            var src = new TimeBasedEscapeTokenSource(token);
+            this.pet.stateMachine.Fire(Trigger.Squat);
+            await UniTask.WaitUntil(() => src.IsCancelled, cancellationToken: token);
+            this.pet.stateMachine.Fire(Trigger.Standup);
+            this.pet.petStats.Happiness += 5;
         }
     }
 
@@ -153,8 +181,9 @@ public class Pet : MonoBehaviour
         Following,
         Grabbed,
         Eating,
-        Sleep,
-        Upset    // new
+        Sleeping,
+        Upset,
+        Squatting,
     }
 
     public enum Trigger
@@ -166,8 +195,10 @@ public class Pet : MonoBehaviour
         FinishEating,
         GotoSleep,
         WakeUp,
-        Upset,   // new
-        Recover  // new
+        Upset,
+        Recover,
+        Squat,
+        Standup,
     }
 
     public PetStats petStats;
@@ -207,6 +238,9 @@ public class Pet : MonoBehaviour
         var upsetAction = new UpsetAction();
         upsetAction.Setup(this);
         this.actions.Add(upsetAction);
+        var squatAction = new SquatAction();
+        squatAction.Setup(this);
+        this.actions.Add(squatAction);
 
         await UniTask.WhenAll(
             this.stateMachineLoop(),
@@ -231,18 +265,22 @@ public class Pet : MonoBehaviour
             .Permit(Trigger.Follow, State.Following)
             .Permit(Trigger.Grab, State.Grabbed)
             .Permit(Trigger.Eat, State.Eating)
-            .Permit(Trigger.GotoSleep, State.Sleep)
-            .Permit(Trigger.Upset, State.Upset);
+            .Permit(Trigger.GotoSleep, State.Sleeping)
+            .Permit(Trigger.Upset, State.Upset)
+            .Permit(Trigger.Squat, State.Squatting);
 
-        this.stateMachine.Configure(State.Sleep)
+        this.stateMachine.Configure(State.Sleeping)
             .OnEntry(() => { Debug.Log("Entering Sleep state"); })
             .SubstateOf(State.Idle)
-            .Permit(Trigger.WakeUp, State.Idle)
-            .Permit(Trigger.Upset, State.Upset);
+            .Permit(Trigger.WakeUp, State.Idle);
         this.stateMachine.Configure(State.Upset)
             .OnEntry(() => Debug.Log("Entering Upset state"))
             .SubstateOf(State.Idle)
             .Permit(Trigger.Recover, State.Idle);
+        this.stateMachine.Configure(State.Squatting)
+            .OnEntry(() => { Debug.Log("Entering Squatting state"); })
+            .SubstateOf(State.Idle)
+            .Permit(Trigger.Standup, State.Idle);
 
         this.stateMachine.Configure(State.Following)
             .OnEntry(() => { Debug.Log("Entering Following state"); })

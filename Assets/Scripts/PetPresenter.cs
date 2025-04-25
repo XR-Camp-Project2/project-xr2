@@ -36,7 +36,7 @@ public class PetPresenter : MonoBehaviour
         var isMoving = this.petNav.Velocity.magnitude > 0.1f;
         this.animator.SetBool("isWalking", isMoving);
         this.animator.SetBool("isCrawlingIdle", !isMoving);
-        this.animator.SetBool("isSleeping", this.pet.StateMachine.State == Pet.State.Sleep);
+        this.animator.SetBool("isSleeping", this.pet.StateMachine.State == Pet.State.Sleeping);
         this.animator.SetBool("isUpset", this.pet.StateMachine.State == Pet.State.Upset);
     }
 
