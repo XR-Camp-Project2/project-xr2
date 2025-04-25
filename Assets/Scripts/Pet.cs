@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.XR.Hands.Samples.GestureSample;
 using Stateless;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using Unity.XR.CoreUtils;
 
 public class Pet : MonoBehaviour
 {
@@ -9,7 +11,6 @@ public class Pet : MonoBehaviour
     {
         Idle,
         Following,
-        Hold,
         Grabbed, 
         Eating   
     }
@@ -23,13 +24,28 @@ public class Pet : MonoBehaviour
         FinishEating  
     }
 
+    // TODO: DI?
+    public StaticHandGesture followGesture;
+    public StaticHandGesture teleportGesture;
+    public StaticHandGesture pointAtGesture;
+
     private StateMachine<State, Trigger> stateMachine;
-    private CancellationToken stateTransitionToken;
+    private CancellationTokenSource stateTransitionTokenSource;
+    private CancellationToken stateTransitionToken => this.stateTransitionTokenSource.Token;
     private PetNav petNav;
+    private XROrigin xrOrigin;
 
     private async UniTaskVoid Start()
     {
         this.petNav = GetComponent<PetNav>();
+        this.xrOrigin = FindFirstObjectByType<XROrigin>();
+        this.setupStateMachine();
+        this.subscribeHandGestureEvents();
+        await this.stateMachineLoop();
+    }
+
+    private void setupStateMachine()
+    {
         this.stateMachine = new StateMachine<State, Trigger>(State.Idle);
 
         // Configure state transitions
@@ -45,8 +61,23 @@ public class Pet : MonoBehaviour
 
         this.stateMachine.Configure(State.Eating)
             .Permit(Trigger.FinishEating, State.Idle);
+    }
 
-        await this.stateMachineLoop();
+    private void subscribeHandGestureEvents()
+    {
+        if(this.followGesture == null)
+        {
+            Debug.LogWarning("Follow gesture is not assigned. Skip subscribing.");
+        }
+        else
+        {
+            this.followGesture.gesturePerformed
+                .AddListener(() =>
+                {
+                    this.stateTransitionTokenSource.Cancel();
+                    this.stateMachine.Fire(Trigger.Follow);
+                });
+        }
     }
 
     private async UniTask stateMachineLoop()
@@ -55,8 +86,7 @@ public class Pet : MonoBehaviour
 
         while (!destroyToken.IsCancellationRequested)
         {
-            var stateTransitionTokenSource  = CancellationTokenSource.CreateLinkedTokenSource(destroyToken);
-            this.stateTransitionToken = stateTransitionTokenSource.Token;
+            this.stateTransitionTokenSource  = CancellationTokenSource.CreateLinkedTokenSource(destroyToken);
 
             switch (this.stateMachine.State)
             {
@@ -64,10 +94,7 @@ public class Pet : MonoBehaviour
                     await this.inIdle();
                     break;
                 case State.Following:
-                    // Handle following state
-                    break;
-                case State.Hold:
-                    // Handle hold state
+                    await this.inFollowing();
                     break;
                 case State.Grabbed:
                     // Handle grabbed state
@@ -87,5 +114,11 @@ public class Pet : MonoBehaviour
             int idleMilliSeconds = Random.Range(500, 1500);
             await UniTask.Delay(idleMilliSeconds, cancellationToken: this.stateTransitionToken);
         }
+    }
+
+    private async UniTask inFollowing()
+    {
+        await this.petNav.MoveTo(this.xrOrigin.transform, this.stateTransitionToken);
+        this.stateMachine.Fire(Trigger.StopFollowing);
     }
 }
