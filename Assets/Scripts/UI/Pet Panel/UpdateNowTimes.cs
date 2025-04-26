@@ -4,8 +4,12 @@ using TMPro;
 
 public class UpdateTimes : MonoBehaviour
 {
-    public TextMeshProUGUI timeText;
-    public TextMeshProUGUI batteryText;
+    [Header("時間顯示文字")]
+    [SerializeField] private TextMeshProUGUI timeText;
+    [Header("電量顯示文字與物件")]
+    [SerializeField] private TextMeshProUGUI batteryText;
+    [SerializeField] private GameObject batteryObjectCharged;
+    [SerializeField] private GameObject[] batteryMasks = new GameObject[5];
 
     void Start()
     {
@@ -36,22 +40,39 @@ public class UpdateTimes : MonoBehaviour
     void UpdateBatteryDisplay()
     {
         float batteryPercentage = SystemInfo.batteryLevel;
-        Debug.Log(batteryPercentage);
+
 
         if (batteryText != null)
         {
             if (batteryPercentage >= 0 && batteryPercentage <= 1)
             {
-                batteryText.text = "Battery: " + Mathf.RoundToInt(batteryPercentage * 100) + "%";
+                batteryText.text = Mathf.RoundToInt(batteryPercentage * 100) + "%";
+                UpdateBatteryIcon((int)(batteryPercentage*100));
             }
             else
             {
-                batteryText.text = "Battery: Unknown";
+                batteryText.text = "0%";
             }
         }
         else
         {
             Debug.Log((batteryPercentage >= 0 && batteryPercentage <= 1 ? Mathf.RoundToInt(batteryPercentage * 100) + "%" : "Unknown"));
+        }
+    }
+
+    void UpdateBatteryIcon(int batteryValue)
+    {
+        for (int i = 0; i < batteryMasks.Length; i++)
+        {
+            var mask = batteryMasks[i];
+            if (batteryValue - (i+1)*20 >= 0)
+            {
+                mask.SetActive(false);
+            }
+            else
+            {
+                mask.SetActive(true);
+            }
         }
     }
 }
