@@ -1,0 +1,2 @@
+D:\NYCU_XR\XR-Pro2\project-xr2\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+D:\NYCU_XR\XR-Pro2\project-xr2\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt
