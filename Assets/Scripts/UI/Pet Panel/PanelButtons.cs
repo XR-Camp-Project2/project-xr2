@@ -19,7 +19,10 @@ public class PanelButtons : MonoBehaviour
 
     public void Start()
     {
-        petObject = GetComponent<Pet>().gameObject;    
+        if (GetComponent<Pet>().gameObject)
+        {
+            petObject = GetComponent<Pet>().gameObject;
+        }
     }
 
     public void onFixedButtonClicked()
