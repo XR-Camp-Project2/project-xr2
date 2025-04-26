@@ -1,9 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.XR;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 
 public class UpdateTimes : MonoBehaviour
@@ -11,38 +7,51 @@ public class UpdateTimes : MonoBehaviour
     public TextMeshProUGUI timeText;
     public TextMeshProUGUI batteryText;
 
-    private InputDevice headDevice;
-
     void Start()
     {
-        headDevice = InputDevices.GetDeviceAtXRNode(XRNode.Head);
+        if (timeText == null)
+        {
+            Debug.LogError("timeText TextMeshProUGUI is not assigned in the Inspector!");
+        }
+        if (batteryText == null)
+        {
+            Debug.LogError("batteryText TextMeshProUGUI is not assigned in the Inspector!");
+        }
     }
 
     void Update()
     {
-        UpdateTime();
-        UpdateBattery();
+        UpdateTimeDisplay();
+        UpdateBatteryDisplay();
     }
 
-    void UpdateTime()
+    void UpdateTimeDisplay()
     {
-        if (timeText != null){
+        if (timeText != null)
+        {
             timeText.text = DateTime.Now.ToString("HH:mm");
         }
     }
 
-    void UpdateBattery()
+    void UpdateBatteryDisplay()
     {
-        if (batteryText != null){
-            if (!headDevice.isValid){
-                headDevice = InputDevices.GetDeviceAtXRNode(XRNode.Head);
-            }
+        float batteryPercentage = SystemInfo.batteryLevel;
+        Debug.Log(batteryPercentage);
 
-            if (headDevice.TryGetFeatureValue(CommonUsages.batteryLevel, out float batteryLevel)){
-                batteryText.text = $"{(batteryLevel * 100f):F0}%";
-            } else {
-                batteryText.text = "N/A";
+        if (batteryText != null)
+        {
+            if (batteryPercentage >= 0 && batteryPercentage <= 1)
+            {
+                batteryText.text = "Battery: " + Mathf.RoundToInt(batteryPercentage * 100) + "%";
             }
+            else
+            {
+                batteryText.text = "Battery: Unknown";
+            }
+        }
+        else
+        {
+            Debug.Log((batteryPercentage >= 0 && batteryPercentage <= 1 ? Mathf.RoundToInt(batteryPercentage * 100) + "%" : "Unknown"));
         }
     }
 }
