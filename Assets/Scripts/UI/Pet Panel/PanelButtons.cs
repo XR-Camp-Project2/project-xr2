@@ -70,4 +70,8 @@ public class PanelButtons : MonoBehaviour
         
         panel.SetActive(false);
     }
+
+    public bool isPanelFixed() {
+        return isFixed;
+    }
 }
