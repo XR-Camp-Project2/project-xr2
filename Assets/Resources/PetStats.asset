@@ -15,7 +15,7 @@ MonoBehaviour:
   PetName: "\u521D\u83EF UIKA"
   PetLabel: "\u611B\u597D\u85CD\u9AEE\u96D9\u99AC\u5C3E\u9B45\u9B54\u7684\u5730\u4E0B\u5BA4\u5FE0\u72AC"
   PetRace: "\u4E09\u89D2\u521D\u83EF"
-  Health: 0
-  Hunger: 14
-  Happiness: 80
+  Health: 100
+  Hunger: 100
+  Happiness: 0
   Favorability: 85.7
