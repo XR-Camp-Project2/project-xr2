@@ -790,6 +790,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 58968997}
+    - target: {fileID: 7129563330544633092, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7551503599260494548, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
       propertyPath: m_Name
       value: Pet Information Panel
