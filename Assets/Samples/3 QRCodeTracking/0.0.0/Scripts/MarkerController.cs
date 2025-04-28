@@ -10,24 +10,24 @@ public class MarkerController : MonoBehaviour
     private void Awake()
     {
         _camera = Camera.main;
-        _textMesh = GetComponentInChildren<TextMeshProUGUI>();
-        if (_textMesh == null)
-        {
-            Debug.LogError("No TextMeshProUGUI found on marker prefab!");
-        }
+        // _textMesh = GetComponentInChildren<TextMeshProUGUI>();
+        // if (_textMesh == null)
+        // {
+        //     Debug.LogError("No TextMeshProUGUI found on marker prefab!");
+        // }
     }
 
     /// <summary>
     /// Updates the marker’s transform and text, and records the update time.
     /// </summary>
-    public void UpdateMarker(Vector3 position, Quaternion rotation, Vector3 scale, string text)
+    public void UpdateMarker(Vector3 position, Quaternion rotation, Vector3 scale)
     {
         transform.SetPositionAndRotation(position, rotation);
         transform.localScale = scale;
-        if (_textMesh)
-        {
-            _textMesh.text = text;
-        }
+        // if (_textMesh)
+        // {
+        //     _textMesh.text = text;
+        // }
         
         lastUpdateTime = Time.time;
         if (!gameObject.activeSelf)
