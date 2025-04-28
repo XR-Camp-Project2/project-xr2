@@ -134,6 +134,10 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
+            if (this.pet.bed == null)
+            {
+                return 0;
+            }
             return (100 - this.pet.petStats.Health) + this.pet.petStats.Hunger;
         }
 
@@ -242,10 +246,25 @@ public class Pet : MonoBehaviour
         squatAction.Setup(this);
         this.actions.Add(squatAction);
 
+        if(TableBedLocator.Instance != null)
+        {
+            TableBedLocator.Instance.OnBedFound += this.setupBed;
+        }
+        else
+        {
+            Debug.LogWarning("TableBedLocator instance is null. Bed will not be set.");
+        }
+
         await UniTask.WhenAll(
             this.stateMachineLoop(),
             this.updatePetStats()
         );
+    }
+
+    private void setupBed(Transform bedTransform)
+    {
+        this.bed = bedTransform;
+        Debug.Log($"Bed set to: {this.bed.name}");
     }
 
     private void setupStats()
