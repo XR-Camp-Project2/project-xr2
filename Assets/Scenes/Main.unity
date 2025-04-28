@@ -1139,6 +1139,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 927309121262695183, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1039375395592230937, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2162,6 +2166,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4852409403014052991, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: leftHandTransform
+      value: 
+      objectReference: {fileID: 381356146}
+    - target: {fileID: 4852409403014052991, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: rightHandTransform
+      value: 
+      objectReference: {fileID: 381356137}
     - target: {fileID: 5404217048182267252, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2242,9 +2254,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7129563330544633092, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7551503599260494548, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
       propertyPath: m_Name
       value: Pet Information Panel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7551503599260494548, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3645,12 +3665,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 561027361}
         m_TargetAssemblyTypeName: Display, Assembly-CSharp
-        m_MethodName: showPanel
-        m_Mode: 1
+        m_MethodName: ShowPanel
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3695,12 +3715,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 561027361}
         m_TargetAssemblyTypeName: Display, Assembly-CSharp
-        m_MethodName: showPanel
-        m_Mode: 1
+        m_MethodName: ShowPanel
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

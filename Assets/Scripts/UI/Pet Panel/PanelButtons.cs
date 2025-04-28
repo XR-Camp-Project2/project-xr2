@@ -1,3 +1,4 @@
+using Oculus.Platform;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,11 +68,20 @@ public class PanelButtons : MonoBehaviour
     public void onCloseButtonClicked()
     {
         // 關閉資訊面板視窗
-        
         panel.SetActive(false);
     }
 
     public bool isPanelFixed() {
         return isFixed;
+    }
+
+    public void setPanelFixed(bool fixedState) {
+        isFixed = fixedState;
+        Image buttonImage = fixedButton.GetComponent<Image>();
+        if (fixedState) {
+            buttonImage.sprite = fixedButtonOnSprite;
+        } else {
+            buttonImage.sprite = fixedButtonOffSprite;
+        }
     }
 }

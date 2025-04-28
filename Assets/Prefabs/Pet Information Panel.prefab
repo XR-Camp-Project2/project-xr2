@@ -1447,9 +1447,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2744487371060551226}
-        m_TargetAssemblyTypeName: PanelButtons, Assembly-CSharp
-        m_MethodName: onCloseButtonClicked
+      - m_Target: {fileID: 4852409403014052991}
+        m_TargetAssemblyTypeName: Display, Assembly-CSharp
+        m_MethodName: HidePanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1487,7 +1487,7 @@ RectTransform:
   m_GameObject: {fileID: 4448778358141117774}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -0.0005, y: 0.0005, z: 0.0005}
+  m_LocalScale: {x: -0.0002, y: 0.0002, z: 0.0002}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2642783605636872849}
@@ -2495,7 +2495,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &8748261100291908407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2546,6 +2546,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 4448778358141117774}
   panelButtons: {fileID: 2744487371060551226}
+  leftHandTransform: {fileID: 0}
+  rightHandTransform: {fileID: 0}
 --- !u!1 &7608343190225719402
 GameObject:
   m_ObjectHideFlags: 0
