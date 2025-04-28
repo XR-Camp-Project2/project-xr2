@@ -134,6 +134,10 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
+            if(pet.bed == null)
+            {
+                return 0;
+            }
             return (100 - this.pet.petStats.Health) + this.pet.petStats.Hunger;
         }
 
@@ -242,10 +246,21 @@ public class Pet : MonoBehaviour
         squatAction.Setup(this);
         this.actions.Add(squatAction);
 
+        if(TableBedLocator.Instance != null) // TODO: DI (TableBedLocator)
+        {
+             TableBedLocator.Instance.OnBedFound += this.setupBed;
+        }
+
         await UniTask.WhenAll(
             this.stateMachineLoop(),
             this.updatePetStats()
         );
+    }
+
+    private void setupBed(Transform bedTransform)
+    {
+        bed = bedTransform;
+        Debug.Log($"[Pet] 床位置已設定: {bed.position}");
     }
 
     private void setupStats()
