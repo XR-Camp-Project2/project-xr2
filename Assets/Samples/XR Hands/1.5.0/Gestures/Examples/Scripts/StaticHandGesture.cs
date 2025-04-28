@@ -21,9 +21,9 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
         [Tooltip("The target Transform to user for target conditions in the hand shape or pose.")]
         Transform m_TargetTransform;
 
-        [SerializeField]
-        [Tooltip("The image component that draws the background for gesture icons.")]
-        Image m_Background;
+        // [SerializeField]
+        // [Tooltip("The image component that draws the background for gesture icons.")]
+        // Image m_Background;
 
         [SerializeField]
         [Tooltip("The event fired when the gesture is performed.")]
@@ -41,9 +41,9 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
         [Tooltip("The interval at which the gesture detection is performed.")]
         float m_GestureDetectionInterval = 0.1f;
 
-        [SerializeField]
-        [Tooltip("The static gestures associated with this gestures handedness.")]
-        StaticHandGesture[] m_StaticGestures;
+        // [SerializeField]
+        // [Tooltip("The static gestures associated with this gestures handedness.")]
+        // StaticHandGesture[] m_StaticGestures;
 
         XRHandShape m_HandShape;
         XRHandPose m_HandPose;
@@ -51,8 +51,8 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
         bool m_PerformedTriggered;
         float m_TimeOfLastConditionCheck;
         float m_HoldStartTime;
-        Color m_BackgroundDefaultColor;
-        Color m_BackgroundHiglightColor = new Color(0f, 0.627451f, 1f);
+        // Color m_BackgroundDefaultColor;
+        // Color m_BackgroundHiglightColor = new Color(0f, 0.627451f, 1f);
 
         /// <summary>
         /// The hand tracking events component to subscribe to receive updated joint data to be used for gesture detection.
@@ -84,11 +84,11 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
         /// <summary>
         /// The image component that draws the background for gesture icons.
         /// </summary>
-        public Image background
-        {
-            get => m_Background;
-            set => m_Background = value;
-        }
+        // public Image background
+        // {
+        //     get => m_Background;
+        //     set => m_Background = value;
+        // }
 
         /// <summary>
         /// The event fired when the gesture is performed.
@@ -128,7 +128,7 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
 
         void Awake()
         {
-            m_BackgroundDefaultColor = m_Background.color;
+            // m_BackgroundDefaultColor = m_Background.color;
         }
 
         void OnEnable()
@@ -161,7 +161,7 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
             {
                 m_PerformedTriggered = false;
                 m_GestureEnded?.Invoke();
-                m_Background.color = m_BackgroundDefaultColor;
+                // m_Background.color = m_BackgroundDefaultColor;
             }
 
             m_WasDetected = detected;
@@ -173,7 +173,7 @@ namespace UnityEngine.XR.Hands.Samples.GestureSample
                 {
                     m_GesturePerformed?.Invoke();
                     m_PerformedTriggered = true;
-                    m_Background.color = m_BackgroundHiglightColor;
+                    // m_Background.color = m_BackgroundHiglightColor;
                 }
             }
 

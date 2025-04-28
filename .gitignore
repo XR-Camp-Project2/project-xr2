@@ -50,3 +50,5 @@ Recordings/
 dist/
 
 Assets/Packages/
+
+.utmp/

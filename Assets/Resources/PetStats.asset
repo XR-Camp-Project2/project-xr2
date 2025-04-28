@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 422aee4a9b7d4d8499cfae3eb85cdf6a, type: 3}
   m_Name: PetStats
   m_EditorClassIdentifier: 
-  PetName: Hatsune
+  PetName: "\u521D\u83EF UIKA"
+  PetLabel: "\u611B\u597D\u85CD\u9AEE\u96D9\u99AC\u5C3E\u9B45\u9B54\u7684\u5730\u4E0B\u5BA4\u5FE0\u72AC"
+  PetRace: "\u4E09\u89D2\u521D\u83EF"
   Health: 100
   Hunger: 100
+  Happiness: 0
+  Favorability: 85.7
