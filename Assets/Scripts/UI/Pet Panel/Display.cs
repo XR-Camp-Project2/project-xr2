@@ -8,10 +8,9 @@ public class Display : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
     [SerializeField] private PanelButtons panelButtons;
-    private const float distance = 0.05f;
+    private const float distance = 0.1f;
     private Vector3 velocity = Vector3.zero;
 
-    XRHandTrackingEvents handTrackingEvents;
     private int handedness = 0; // 0: None, 1: Left, 2: Right
 
     public Transform leftHandTransform;
