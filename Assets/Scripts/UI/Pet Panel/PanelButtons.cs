@@ -20,10 +20,7 @@ public class PanelButtons : MonoBehaviour
 
     public void Start()
     {
-        if (GetComponent<Pet>())
-        {
-            petObject = GetComponent<Pet>().gameObject;
-        }
+        
     }
 
     public void onFixedButtonClicked()
@@ -54,18 +51,22 @@ public class PanelButtons : MonoBehaviour
 
         int randomIndex = Random.Range(0, foodPrefabs.Length);
         GameObject selectedFood = foodPrefabs[randomIndex];
-        // if (selectedFood != null)
-        // {
-        //     Instantiate(selectedFood, petObject.transform.position, Quaternion.identity);
-        // }
+        if (selectedFood != null)
+        {
+            Instantiate(selectedFood, transform.parent.gameObject.transform.parent.position, Quaternion.identity);
+        }
     }
 
     public void onRestButtonClicked()
     {
         // 播退場動畫
         
-        // 讓寵物消失
-        petObject.SetActive(false);
+
+        // 刪除寵物物件
+        if (GetComponent<Pet>())
+        {
+            petObject = GetComponent<Pet>().gameObject;
+        }
         Destroy(petObject);
     }
 

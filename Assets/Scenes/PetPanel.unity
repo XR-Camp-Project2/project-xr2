@@ -706,6 +706,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2744487371060551226, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: foodPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2744487371060551226, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: 'foodPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6781086772241137454, guid: b49d3d8ae3a4e5043930d8a5babfb5f9, type: 3}
+    - target: {fileID: 2744487371060551226, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: 'foodPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8875963046925556243, guid: 573b24fe15325ac4c8637a32894966f4, type: 3}
     - target: {fileID: 5404217048182267252, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
       propertyPath: m_Pivot.x
       value: 0

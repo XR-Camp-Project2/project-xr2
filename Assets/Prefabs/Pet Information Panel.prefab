@@ -2495,7 +2495,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &8748261100291908407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3400,4 +3400,6 @@ MonoBehaviour:
   fixedButton: {fileID: 5025706392307953299}
   fixedButtonOnSprite: {fileID: 21300000, guid: 1716e9687257aae4eb358498f66be7b5, type: 3}
   fixedButtonOffSprite: {fileID: 21300000, guid: 25d9a8a0dbf59fc4f984278a85c3cd09, type: 3}
-  foodPrefabs: []
+  foodPrefabs:
+  - {fileID: 6781086772241137454, guid: b49d3d8ae3a4e5043930d8a5babfb5f9, type: 3}
+  - {fileID: 8875963046925556243, guid: 573b24fe15325ac4c8637a32894966f4, type: 3}
