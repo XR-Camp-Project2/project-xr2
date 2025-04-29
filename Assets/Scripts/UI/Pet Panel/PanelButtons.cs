@@ -53,7 +53,8 @@ public class PanelButtons : MonoBehaviour
         GameObject selectedFood = foodPrefabs[randomIndex];
         if (selectedFood != null)
         {
-            Instantiate(selectedFood, transform.parent.gameObject.transform.parent.position, Quaternion.identity);
+            Transform panelTransform = transform.parent.gameObject.transform;
+            GameObject food = Instantiate(selectedFood, panelTransform.position, Quaternion.identity);
         }
     }
 
@@ -63,10 +64,15 @@ public class PanelButtons : MonoBehaviour
         
 
         // 刪除寵物物件
-        if (GetComponent<Pet>())
+        if (GameObject.FindGameObjectWithTag("Pet") != null)
         {
-            petObject = GetComponent<Pet>().gameObject;
+            petObject = GameObject.FindGameObjectWithTag("Pet");
         }
+        else
+        {
+            return;
+        }
+
         Destroy(petObject);
     }
 

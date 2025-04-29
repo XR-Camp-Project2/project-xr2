@@ -33,8 +33,10 @@ public class Display : MonoBehaviour
         }
 
         newPosition -= (newPosition - Camera.main.transform.position).normalized * distance;
-        newRotation = Quaternion.LookRotation(Camera.main.transform.position - newPosition, Vector3.up);
 
+        newRotation = Quaternion.LookRotation(Camera.main.transform.position - newPosition, Vector3.up);
+        newRotation *= Quaternion.Euler(0, 180, 0); // Rotate 180 degrees around Y-axis
+        
         panel.transform.position = Vector3.SmoothDamp(panel.transform.position, newPosition, ref velocity, 0.1f);
         panel.transform.rotation = Quaternion.Slerp(panel.transform.rotation, newRotation, Time.deltaTime * 10f);
     }
@@ -57,6 +59,8 @@ public class Display : MonoBehaviour
         panel.transform.position = newPosition - 
             (newPosition - Camera.main.transform.position).normalized * distance;
         panel.transform.LookAt(Camera.main.transform.position);
+        panel.transform.Rotate(0, 180, 0); // Rotate 180 degrees around Y-axis
+
         velocity = Vector3.zero; // Reset velocity to avoid jittering
         
         panel.SetActive(true);
