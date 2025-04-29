@@ -30,9 +30,9 @@ Transform:
   m_GameObject: {fileID: 4811747414282056001}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.03, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3640530783736477205}
   m_Father: {fileID: 0}
@@ -74,9 +74,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e09bf61849719548a8d2225b16f65d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  petStats: {fileID: 0}
   followGesture: {fileID: 0}
   teleportGesture: {fileID: 0}
   pointAtGesture: {fileID: 0}
+  bed: {fileID: 0}
 --- !u!114 &7743817877884381223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +137,18 @@ PrefabInstance:
     - target: {fileID: 274909201428356402, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
       propertyPath: m_Name
       value: Hatsune52
+      objectReference: {fileID: 0}
+    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
       propertyPath: m_LocalPosition.x
