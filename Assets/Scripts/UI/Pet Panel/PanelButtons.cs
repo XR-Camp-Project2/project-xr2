@@ -62,7 +62,11 @@ public class PanelButtons : MonoBehaviour
 
     public void onRestButtonClicked()
     {
-        // 讓寵物直接消失
+        // 播退場動畫
+        
+        // 讓寵物消失
+        petObject.SetActive(false);
+        Destroy(petObject);
     }
 
     public void onCloseButtonClicked()
