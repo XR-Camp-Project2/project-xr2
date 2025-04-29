@@ -1199,6 +1199,18 @@ PrefabInstance:
       value: Hatsune52
       objectReference: {fileID: 0}
     - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
