@@ -494,7 +494,7 @@ public class Pet : MonoBehaviour
     {
         var food = GameObject.FindGameObjectsWithTag(FOOD_TAG)
             .OrderBy((go) => Vector3.Distance(go.transform.position, this.transform.position))
-            .First();
+            .FirstOrDefault();
         if (food == null)
         {
             Debug.LogWarning("No food found, returning to Idle state.");
