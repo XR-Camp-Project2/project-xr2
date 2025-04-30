@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7743817877884381223}
   - component: {fileID: 6359123184337626690}
   - component: {fileID: 9176476454171268450}
+  - component: {fileID: 3447937888197638441}
   m_Layer: 0
   m_Name: Pet
   m_TagString: Pet
@@ -30,9 +31,9 @@ Transform:
   m_GameObject: {fileID: 4811747414282056001}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: 1.03, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3640530783736477205}
   m_Father: {fileID: 0}
@@ -74,7 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e09bf61849719548a8d2225b16f65d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petStats: {fileID: 0}
+  petStats: {fileID: 11400000, guid: 2aeb507e59e4d434a84fe6ff405fcd9c, type: 2}
   followGesture: {fileID: 0}
   teleportGesture: {fileID: 0}
   pointAtGesture: {fileID: 0}
@@ -126,6 +127,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e20ba215b4cc2654ba08f304514abc39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3447937888197638441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4811747414282056001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 581e00a35f3cdf64196984ec203ceaab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4187995463256076701
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -137,18 +150,6 @@ PrefabInstance:
     - target: {fileID: 274909201428356402, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
       propertyPath: m_Name
       value: Hatsune52
-      objectReference: {fileID: 0}
-    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
       propertyPath: m_LocalPosition.x
