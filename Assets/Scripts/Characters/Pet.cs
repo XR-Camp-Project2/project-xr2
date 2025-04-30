@@ -541,7 +541,8 @@ public class Pet : MonoBehaviour
             // TODO: play eating animation?
             await UniTask.Delay(2000, cancellationToken: this.stateTransitionToken);
             Destroy(food);
-
+            AudioManager audioManager = FindFirstObjectByType<AudioManager>();
+            audioManager.Play("SFX", 0, 0.5f);
         }
         finally
         {

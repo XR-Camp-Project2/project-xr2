@@ -33,6 +33,8 @@ public class PetLinkMover : MonoBehaviour
                     await UniTask.Yield(token);
                 }
                 agent.Warp(endPos);
+                AudioManager audioManager = FindFirstObjectByType<AudioManager>();
+                audioManager.Play("SFX", 1, 0.5f);
                 agent.CompleteOffMeshLink();
                 Debug.Log("Set isLeaping to false");
                 animator.SetBool("isLeaping", false);

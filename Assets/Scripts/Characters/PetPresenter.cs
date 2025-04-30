@@ -54,4 +54,18 @@ public class PetPresenter : MonoBehaviour
             }
         }
     }
+
+    private async UniTaskVoid LoopWalkingSFX() {
+        AudioManager audioManager = FindFirstObjectByType<AudioManager>();
+
+        while (true) {
+            await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
+            if (this.petNav.Velocity.magnitude > 0.1f && !this.animator.GetBool("isLeaping")) {
+                audioManager.Play("SFX", 2, 0.5f);
+            }
+            else {
+                break;
+            }
+        }
+    }
 }
