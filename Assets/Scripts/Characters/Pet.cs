@@ -353,8 +353,7 @@ public class Pet : MonoBehaviour
         this.stateMachine.Configure(State.Following)
             .OnEntry(() => { Debug.Log("Entering Following state"); })
             .Permit(Trigger.StopFollowing, State.Idle)
-            .Permit(Trigger.Grab, State.Grabbed)
-            .Permit(Trigger.Upset, State.Upset);
+            .Permit(Trigger.Grab, State.Grabbed);
 
         this.stateMachine.Configure(State.Eating)
             .OnEntry(() => { Debug.Log("Entering Eating state"); })
@@ -368,7 +367,8 @@ public class Pet : MonoBehaviour
         this.stateMachine.Configure(State.SearchingFood)
             .OnEntry(() => { Debug.Log("Entering SearchingFood state"); })
             .Permit(Trigger.Eat, State.Eating)
-            .Permit(Trigger.GiveUpSearchingFood, State.Idle);
+            .Permit(Trigger.GiveUpSearchingFood, State.Idle)
+            .Permit(Trigger.Follow, State.Following);
     }
 
     private void subscribeHandGestureEvents()
