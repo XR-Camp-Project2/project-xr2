@@ -284,7 +284,8 @@ public class Pet : MonoBehaviour
 
         await UniTask.WhenAll(
             this.stateMachineLoop(),
-            this.updatePetStats()
+            this.updatePetStats(),
+            this.fall()
         );
     }
 
@@ -604,5 +605,34 @@ public class Pet : MonoBehaviour
     private bool flip(float probability)
     {
         return Random.Range(0f, 1f) < probability;
+    }
+
+    private async UniTask fall()
+    {
+        var token = this.GetCancellationTokenOnDestroy();
+        var agent = GetComponent<NavMeshAgent>();
+        var animator = GetComponentInChildren<Animator>();
+        while (!token.IsCancellationRequested)
+        {
+            if (!agent.isOnNavMesh)
+            {
+                animator.SetBool("isLeaping", true);
+                var g = 9.8f; // FIXME: hard-coded gravity
+                var velocity = Vector3.zero;
+                while (true)
+                {
+                    velocity += Vector3.down * (g * Time.deltaTime);
+                    transform.position += velocity * Time.deltaTime;
+                    if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 0.1f, NavMesh.AllAreas))
+                    {
+                        agent.Warp(hit.position);
+                        break;
+                    }
+                    await UniTask.Yield(token);
+                }
+                animator.SetBool("isLeaping", false);
+            }
+            await UniTask.Yield();
+        }
     }
 }
