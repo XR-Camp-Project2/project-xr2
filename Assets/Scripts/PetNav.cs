@@ -34,10 +34,14 @@ public class PetNav : MonoBehaviour
     {
         var newPos = this.findNextInterestedPoint();
         agent.SetDestination(newPos);
-        await UniTask.WaitUntil(
-            () => agent.pathPending || agent.remainingDistance < 0.1f,
-            cancellationToken: ct
-        );
+
+        // FIXME: not sure whether WaitUntil does not work, use workaround for now
+        await UniTask.Delay(5000, cancellationToken: ct);
+
+        // await UniTask.WaitUntil(
+        //     () => agent.pathPending || agent.remainingDistance < 0.1f,
+        //     cancellationToken: ct
+        // );
     }
 
     public async UniTask MoveTo(Transform target, CancellationToken ct)
