@@ -644,7 +644,7 @@ public class Pet : MonoBehaviour
                 {
                     velocity += Vector3.down * (g * Time.deltaTime);
                     transform.position += velocity * Time.deltaTime;
-                    if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 0.1f, NavMesh.AllAreas))
+                    if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 0.5f, NavMesh.AllAreas))
                     {
                         agent.Warp(hit.position);
                         break;
