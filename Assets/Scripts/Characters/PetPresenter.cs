@@ -27,6 +27,7 @@ public class PetPresenter : MonoBehaviour
             Debug.LogError("Animator component not found in children of the GameObject.");
             return;
         }
+        LoopWalkingSFX().Forget(); // Start the walking sound effect loop
     }
 
     void Update()
@@ -43,12 +44,12 @@ public class PetPresenter : MonoBehaviour
         AudioManager audioManager = FindFirstObjectByType<AudioManager>();
 
         while (true) {
-            await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
             if (this.petNav.Velocity.magnitude > 0.1f && !this.animator.GetBool("isLeaping")) {
                 audioManager.Play("SFX", 2, 0.5f);
+                await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
             }
             else {
-                break;
+                await UniTask.Delay(100, cancellationToken: this.GetCancellationTokenOnDestroy());
             }
         }
     }

@@ -1,12 +1,17 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AI;
+using System.Linq;
 
 // Modified from AgentLinkMover.cs in Unity AI Navigation Samples 
 public class PetLinkMover : MonoBehaviour
 {
     private async UniTaskVoid Start()
     {
+        var jumpSFX = FindObjectsByType<AudioSource>(FindObjectsSortMode.None)
+            .FirstOrDefault(x => x.name == "JumpSFX")
+            ?.GetComponent<AudioSource>();
+        Debug.Assert(jumpSFX != null, "JumpSFX not found in the scene.");
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.autoTraverseOffMeshLink = false;
         Animator animator = GetComponentInChildren<Animator>();
@@ -21,6 +26,7 @@ public class PetLinkMover : MonoBehaviour
                 Vector3 startPos = agent.transform.position;
                 Vector3 endPos = data.endPos + Vector3.up * agent.baseOffset;
                 transform.LookAt(endPos);
+                jumpSFX.Play();
                 float deltaY = endPos.y - startPos.y;
                 float height = Mathf.Abs(deltaY);
                 float duration = (endPos - startPos).magnitude / agent.speed;
@@ -33,8 +39,6 @@ public class PetLinkMover : MonoBehaviour
                     await UniTask.Yield(token);
                 }
                 agent.Warp(endPos);
-                AudioManager audioManager = FindFirstObjectByType<AudioManager>();
-                audioManager.Play("SFX", 1, 0.5f);
                 agent.CompleteOffMeshLink();
                 Debug.Log("Set isLeaping to false");
                 animator.SetBool("isLeaping", false);
