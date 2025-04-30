@@ -36,23 +36,7 @@ public class PetPresenter : MonoBehaviour
         this.animator.SetBool("isCrawlingIdle", !isMoving);
         this.animator.SetBool("isSleeping", this.pet.StateMachine.State == Pet.State.Sleeping);
         this.animator.SetBool("isUpset", this.pet.StateMachine.State == Pet.State.Upset);
-    }
-
-    private async UniTaskVoid randomlyEnterCrawlingState()
-    {
-        var token = this.GetCancellationTokenOnDestroy();
-        while (!token.IsCancellationRequested)
-        {
-            await UniTask.Delay(1000, cancellationToken: token);
-            if (this.pet.StateMachine.IsInState(Pet.State.Idle))
-            {
-                this.animator.SetBool("isCrawling", Random.Range(0f, 1f) < 0.1f);
-            }
-            else
-            {
-                this.animator.SetBool("isCrawling", false);
-            }
-        }
+        this.animator.SetBool("isCrawling", this.pet.StateMachine.State == Pet.State.SearchingFood);
     }
 
     private async UniTaskVoid LoopWalkingSFX() {
