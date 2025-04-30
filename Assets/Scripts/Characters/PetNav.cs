@@ -44,16 +44,16 @@ public class PetNav : MonoBehaviour
         // );
     }
 
-    public async UniTask MoveTo(Transform target, CancellationToken ct)
+    public async UniTask MoveTo(Transform target, CancellationToken ct, float stopDistance = 0.1f)
     {
-        await this.MoveTo(target.position, ct);
+        await this.MoveTo(target.position, ct, stopDistance);
     }
 
-    public async UniTask MoveTo(Vector3 target, CancellationToken ct)
+    public async UniTask MoveTo(Vector3 target, CancellationToken ct, float stopDistance = 0.1f)
     {
         agent.SetDestination(target);
         await UniTask.WaitUntil(
-            () => agent.pathPending || agent.remainingDistance < 0.1f,
+            () => agent.pathPending || agent.remainingDistance < stopDistance,
             cancellationToken: ct
         );
     }
