@@ -4423,6 +4423,10 @@ PrefabInstance:
       propertyPath: UseSceneData
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 636000877107120485, guid: 91fb60f64fb559545af8a905a9626469, type: 3}
+      propertyPath: CollectGeometry
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3512208835814877336, guid: 91fb60f64fb559545af8a905a9626469, type: 3}
       propertyPath: m_Name
       value: AutoGenerateNavMesh
