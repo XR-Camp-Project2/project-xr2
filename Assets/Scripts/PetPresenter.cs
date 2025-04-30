@@ -27,8 +27,6 @@ public class PetPresenter : MonoBehaviour
             Debug.LogError("Animator component not found in children of the GameObject.");
             return;
         }
-
-        this.randomlyEnterCrawlingState().Forget();
     }
 
     void Update()

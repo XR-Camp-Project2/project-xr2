@@ -23,21 +23,28 @@ public class Pet : MonoBehaviour
 
         private async UniTaskVoid checkCancel(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                await UniTask.Delay(1000, cancellationToken: token);
-                float elapsed = Time.time - this.startsAt;
-                // Increase escape probability over time
-                float escapeProbability = Mathf.Clamp01(elapsed * elapsed / 100f);
-                if (Random.Range(0f, 1f) < escapeProbability)
+                while (!token.IsCancellationRequested)
                 {
-                    this.tokenSource.Cancel();
-                    break;
+                    await UniTask.Delay(1000, cancellationToken: token);
+                    float elapsed = Time.time - this.startsAt;
+                    // Increase escape probability over time
+                    float escapeProbability = Mathf.Clamp01(elapsed * elapsed / 100f);
+                    if (Random.Range(0f, 1f) < escapeProbability)
+                    {
+                        break;
+                    }
                 }
+            }
+            finally
+            {
+                this.tokenSource.Cancel();
             }
         }
 
         public bool IsCancelled => this.tokenSource.IsCancellationRequested;
+        public CancellationToken Token => this.tokenSource.Token;
     }
 
     private interface PetAction
@@ -176,6 +183,7 @@ public class Pet : MonoBehaviour
         public async UniTask Execute(CancellationToken token)
         {
             await this.pet.petNav.moveToRandomPoint(token);
+            Debug.Log("Exiting WanderAction");
         }
     }
 
@@ -188,6 +196,7 @@ public class Pet : MonoBehaviour
         Sleeping,
         Upset,
         Squatting,
+        Leaping,
     }
 
     public enum Trigger
@@ -203,6 +212,8 @@ public class Pet : MonoBehaviour
         Recover,
         Squat,
         Standup,
+        Jump,
+        Land,
     }
 
     public PetStats petStats;
@@ -246,7 +257,7 @@ public class Pet : MonoBehaviour
         squatAction.Setup(this);
         this.actions.Add(squatAction);
 
-        if(TableBedLocator.Instance != null)
+        if (TableBedLocator.Instance != null)
         {
             TableBedLocator.Instance.OnBedFound += this.setupBed;
         }
@@ -286,7 +297,8 @@ public class Pet : MonoBehaviour
             .Permit(Trigger.Eat, State.Eating)
             .Permit(Trigger.GotoSleep, State.Sleeping)
             .Permit(Trigger.Upset, State.Upset)
-            .Permit(Trigger.Squat, State.Squatting);
+            .Permit(Trigger.Squat, State.Squatting)
+            .Permit(Trigger.Jump, State.Leaping);
 
         this.stateMachine.Configure(State.Sleeping)
             .OnEntry(() => { Debug.Log("Entering Sleep state"); })
@@ -313,6 +325,9 @@ public class Pet : MonoBehaviour
             .Permit(Trigger.FinishEating, State.Idle)
             .Permit(Trigger.Upset, State.Upset);
 
+        this.stateMachine.Configure(State.Leaping)
+            .OnEntry(() => { Debug.Log("Entering Jumping state"); })
+            .Permit(Trigger.Land, State.Idle);
     }
 
     private void subscribeHandGestureEvents()
