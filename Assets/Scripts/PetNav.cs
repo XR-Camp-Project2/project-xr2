@@ -46,7 +46,12 @@ public class PetNav : MonoBehaviour
 
     public async UniTask MoveTo(Transform target, CancellationToken ct)
     {
-        agent.SetDestination(target.position);
+        await this.MoveTo(target.position, ct);
+    }
+
+    public async UniTask MoveTo(Vector3 target, CancellationToken ct)
+    {
+        agent.SetDestination(target);
         await UniTask.WaitUntil(
             () => agent.pathPending || agent.remainingDistance < 0.1f,
             cancellationToken: ct

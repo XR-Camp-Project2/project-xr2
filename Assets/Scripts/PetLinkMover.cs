@@ -20,6 +20,7 @@ public class PetLinkMover : MonoBehaviour
                 OffMeshLinkData data = agent.currentOffMeshLinkData;
                 Vector3 startPos = agent.transform.position;
                 Vector3 endPos = data.endPos + Vector3.up * agent.baseOffset;
+                transform.LookAt(endPos);
                 float deltaY = endPos.y - startPos.y;
                 float height = Mathf.Abs(deltaY);
                 float duration = (endPos - startPos).magnitude / agent.speed;
@@ -31,6 +32,7 @@ public class PetLinkMover : MonoBehaviour
                     normalizedTime += Time.deltaTime / duration;
                     await UniTask.Yield(token);
                 }
+                agent.Warp(endPos);
                 agent.CompleteOffMeshLink();
                 Debug.Log("Set isLeaping to false");
                 animator.SetBool("isLeaping", false);

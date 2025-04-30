@@ -80,6 +80,8 @@ MonoBehaviour:
   teleportGesture: {fileID: 0}
   pointAtGesture: {fileID: 0}
   bed: {fileID: 0}
+  rightHandTarget: {fileID: 8215155403082163084}
+  rightHandRig: {fileID: 1038116606491012900}
 --- !u!114 &7743817877884381223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,6 +201,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 5949069767342729150}
   m_SourcePrefab: {fileID: 100100000, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+--- !u!114 &1038116606491012900 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3780382810268229305, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+  m_PrefabInstance: {fileID: 4187995463256076701}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &3640530783736477205 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
@@ -236,3 +249,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!4 &8215155403082163084 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5196212785398452753, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+  m_PrefabInstance: {fileID: 4187995463256076701}
+  m_PrefabAsset: {fileID: 0}

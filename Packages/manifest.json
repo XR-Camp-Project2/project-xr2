@@ -7,11 +7,13 @@
         "com.github-glitchenzo.nugetforunity",
         "com.cysharp.unitask",
         "com.cysharp.r3",
-        "jp.hadashikick.vcontainer"
+        "jp.hadashikick.vcontainer",
+        "com.annulusgames.lit-motion"
       ]
     }
   ],
   "dependencies": {
+    "com.annulusgames.lit-motion": "2.0.1",
     "com.cysharp.unitask": "2.5.10",
     "com.github-glitchenzo.nugetforunity": "4.3.0",
     "com.meta.xr.sdk.all": "74.0.3",
