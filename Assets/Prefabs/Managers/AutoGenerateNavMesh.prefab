@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6088762183381071365}
   - component: {fileID: 7519798450298841698}
+  - component: {fileID: 636000877107120485}
   m_Layer: 0
   m_Name: AutoGenerateNavMesh
   m_TagString: Untagged
@@ -39,9 +40,45 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3512208835814877336}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37461a0f8f77afc4daa4be99c9854b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   arPlaneManager: {fileID: 0}
+--- !u!114 &636000877107120485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3512208835814877336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e78cc1d50b327bb49b31a40bfbe1ce93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildOnSceneLoaded: 1
+  CollectGeometry: 0
+  CollectObjects: 0
+  AgentRadius: 0.2
+  AgentHeight: 0.5
+  AgentClimb: 0.04
+  AgentMaxSlope: 5.5
+  Agents: []
+  NavigableSurfaces: -1
+  SceneObstacles: 0
+  Layers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  AgentIndex: 0
+  UseSceneData: 0
+  CustomAgent: 0
+  OverrideVoxelSize: 0
+  VoxelSize: 0
+  OverrideTileSize: 0
+  TileSize: 256
+  GenerateLinks: 1
+  <OnNavMeshInitialized>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []

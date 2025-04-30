@@ -4379,8 +4379,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BuildOnSceneLoaded: 1
-  CollectGeometry: 1
-  CollectObjects: 2
+  CollectGeometry: 0
+  CollectObjects: 0
   AgentRadius: 0.2
   AgentHeight: 0.5
   AgentClimb: 0.04
@@ -4392,13 +4392,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   AgentIndex: 0
-  UseSceneData: 1
-  CustomAgent: 1
+  UseSceneData: 0
+  CustomAgent: 0
   OverrideVoxelSize: 0
   VoxelSize: 0
   OverrideTileSize: 0
   TileSize: 256
-  GenerateLinks: 0
+  GenerateLinks: 1
   <OnNavMeshInitialized>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
