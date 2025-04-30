@@ -496,6 +496,7 @@ public class Pet : MonoBehaviour
     private async UniTask lookAtPlayer()
     {
         this.headRig.weight = 1f;
+        var target =  Camera.main.transform;
         try
         {
             while (!this.stateTransitionToken.IsCancellationRequested)
@@ -503,7 +504,7 @@ public class Pet : MonoBehaviour
                 await UniTask.Yield(this.stateTransitionToken);
                 this.headTarget.position = Vector3.Lerp(
                     this.headTarget.position,
-                    this.xrOrigin.transform.position,
+                    target.position,
                     2f * Time.deltaTime
                 );
             }
