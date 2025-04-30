@@ -5,6 +5,7 @@ using System.Diagnostics;
 using UnityEngine;
 using Meta.XR;
 using PassthroughCameraSamples;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// 增強型 QR 碼識別與角色顯示管理系統
@@ -103,7 +104,7 @@ public class QrCodeDisplayManager : MonoBehaviour
     {
         // 編輯器模式下的模擬輸入處理
         #if UNITY_EDITOR
-        if (simulationModeInEditor && Input.GetKeyDown(KeyCode.Space))
+        if (simulationModeInEditor && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             SimulateQrCodeDetection();
             return;
