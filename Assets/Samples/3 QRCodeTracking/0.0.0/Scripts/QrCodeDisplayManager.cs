@@ -8,6 +8,8 @@ using PassthroughCameraSamples;
 using UnityEngine.InputSystem;
 using Meta.XR.MRUtilityKit;
 using UnityEngine.AI;
+using UnityEngine.XR.ARFoundation;
+using System.Linq;
 
 /// <summary>
 /// 增強型 QR 碼識別與角色顯示管理系統
@@ -282,7 +284,17 @@ public class QrCodeDisplayManager : MonoBehaviour
 
         LogInfo($"Spawning character at {center} generate character for QR code '{qrResult.text}'");
         _characterState = CharacterState.Spawning;
-        
+
+        // find nearest ARPlane and set the position to the plane center
+        var plane = FindObjectsByType<ARPlane>(FindObjectsSortMode.None)
+            .OrderBy(p => Vector3.Distance(p.transform.position, center))
+            .FirstOrDefault();
+        if(plane != null)
+        {
+            center = plane.center;
+            LogInfo($"Found ARPlane '{plane.trackableId}' at {plane.center}");
+        }
+
         // 實例化角色
         _spawnedCharacter = Instantiate(characterPrefab, center, Quaternion.identity);
         SceneNavigation sceneNavigation = FindFirstObjectByType<SceneNavigation>();
