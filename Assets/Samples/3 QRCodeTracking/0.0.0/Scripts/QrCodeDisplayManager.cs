@@ -300,6 +300,7 @@ public class QrCodeDisplayManager : MonoBehaviour
         SceneNavigation sceneNavigation = FindFirstObjectByType<SceneNavigation>();
         if (sceneNavigation != null)
         {
+            sceneNavigation.Agents.Clear();
             sceneNavigation.Agents.Add(_spawnedCharacter.GetComponent<NavMeshAgent>());
             sceneNavigation.BuildSceneNavMesh();
         }
