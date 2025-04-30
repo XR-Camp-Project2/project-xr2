@@ -627,5 +627,14 @@ public class QrCodeDisplayManager : MonoBehaviour
     {
         UnityEngine.Debug.LogError($"DC[QrManager] {message}");
     }
+
+    public void ResetPetState() {
+        _characterState = CharacterState.NotPresent;
+        if (_spawnedCharacter != null) {
+            Destroy(_spawnedCharacter);
+            _spawnedCharacter = null;
+        }
+        _lastDetectedQrCode = null;
+    }
 #endif
 }

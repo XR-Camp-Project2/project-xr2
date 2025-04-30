@@ -2174,6 +2174,34 @@ PrefabInstance:
       propertyPath: rightHandTransform
       value: 
       objectReference: {fileID: 381356137}
+    - target: {fileID: 5336480081383061120, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336480081383061120, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336480081383061120, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 993900375}
+    - target: {fileID: 5336480081383061120, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336480081383061120, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ResetPetState
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336480081383061120, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: QrCodeDisplayManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5336480081383061120, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5404217048182267252, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2958,6 +2986,17 @@ CapsuleCollider:
   m_Height: 0.05
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &993900375 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1181644838449443592, guid: d99abf984bb6bf64a82e25385baa274e, type: 3}
+  m_PrefabInstance: {fileID: 930018843}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1516bc9b09ffb466f819a153f8024135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1003988180
 GameObject:
   m_ObjectHideFlags: 0
@@ -3832,6 +3871,10 @@ PrefabInstance:
     - target: {fileID: 3613868102660323786, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
       propertyPath: SceneSettings.RoomIndex
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613868102660323786, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
+      propertyPath: SceneSettings.DataSource
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8047981335285221976, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
       propertyPath: m_LocalPosition.x
