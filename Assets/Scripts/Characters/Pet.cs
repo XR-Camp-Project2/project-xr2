@@ -210,7 +210,6 @@ public class Pet : MonoBehaviour
         public async UniTask Execute(CancellationToken token)
         {
             var src = new TimeBasedEscapeTokenSource(token);
-
         }
     }
 
@@ -249,7 +248,6 @@ public class Pet : MonoBehaviour
     public PetStats petStats;
 
     // TODO: DI?
-    public StaticHandGesture followGesture;
     public StaticHandGesture teleportGesture;
     public StaticHandGesture pointAtGesture;
     public Transform bed;
@@ -259,6 +257,10 @@ public class Pet : MonoBehaviour
     private Transform rightHandTarget;
     [SerializeField]
     private Rig rightHandRig;
+    [SerializeField]
+    private Transform headTarget;
+    [SerializeField]
+    private Rig headRig;
 
     public StateMachine<State, Trigger> StateMachine => this.stateMachine;
     private StateMachine<State, Trigger> stateMachine;
@@ -272,27 +274,24 @@ public class Pet : MonoBehaviour
     {
         Debug.Assert(this.rightHandTarget != null, "Right hand target is not assigned.");
         Debug.Assert(this.rightHandRig != null, "Right hand rig is not assigned.");
+        Debug.Assert(this.headTarget != null, "Head target is not assigned.");
+        Debug.Assert(this.headRig != null, "Head rig is not assigned.");
+
         this.petNav = GetComponent<PetNav>();
         this.xrOrigin = FindFirstObjectByType<XROrigin>();
         this.setupStats();
         this.setupStateMachine();
         this.subscribeHandGestureEvents();
 
-        var standAction = new StandAction();
-        standAction.Setup(this);
-        this.actions.Add(standAction);
-        var sleepAction = new SleepAction();
-        sleepAction.Setup(this);
-        this.actions.Add(sleepAction);
-        var wanderAction = new WanderAction();
-        wanderAction.Setup(this);
-        this.actions.Add(wanderAction);
-        var upsetAction = new UpsetAction();
-        upsetAction.Setup(this);
-        this.actions.Add(upsetAction);
-        var squatAction = new SquatAction();
-        squatAction.Setup(this);
-        this.actions.Add(squatAction);
+        this.actions.Add(new StandAction());
+        this.actions.Add(new SleepAction());
+        this.actions.Add(new WanderAction());
+        this.actions.Add(new UpsetAction());
+        this.actions.Add(new SquatAction());
+        foreach (var action in this.actions)
+        {
+            action.Setup(this);
+        }
 
         if (TableBedLocator.Instance != null)
         {
@@ -374,18 +373,28 @@ public class Pet : MonoBehaviour
 
     private void subscribeHandGestureEvents()
     {
-        if (this.followGesture == null)
+        var followGestureGo = FindFirstObjectByType<FollowGestureTag>()?.gameObject;
+        if (followGestureGo == null)
         {
             Debug.LogWarning("Follow gesture is not assigned. Skip subscribing.");
         }
         else
         {
-            this.followGesture.gesturePerformed
-                .AddListener(() =>
-                {
-                    this.stateTransitionTokenSource.Cancel();
-                    this.stateMachine.Fire(Trigger.Follow);
-                });
+            var gestures = followGestureGo.GetComponents<StaticHandGesture>();
+            if (gestures.Length == 0)
+            {
+                Debug.LogWarning("No gestures found on FollowGestureTag. Skip subscribing.");
+                return;
+            }
+            foreach (var gesture in gestures)
+            {
+                gesture.gesturePerformed
+                    .AddListener(() =>
+                    {
+                        this.stateTransitionTokenSource.Cancel();
+                        this.stateMachine.Fire(Trigger.Follow);
+                    });
+            }
         }
 
         if (this.pointAtGesture == null)
@@ -475,8 +484,63 @@ public class Pet : MonoBehaviour
 
     private async UniTask inFollowing()
     {
-        await this.petNav.MoveTo(this.xrOrigin.transform, this.stateTransitionToken);
-        this.stateMachine.Fire(Trigger.StopFollowing);
+        while(!this.stateTransitionToken.IsCancellationRequested)
+        {
+            await UniTask.WhenAny(
+                this.moveTowardsPlayer(),
+                this.lookAtPlayer()
+            );
+        }
+    }
+
+    private async UniTask lookAtPlayer()
+    {
+        this.headRig.weight = 1f;
+        try
+        {
+            while (!this.stateTransitionToken.IsCancellationRequested)
+            {
+                await UniTask.Yield(this.stateTransitionToken);
+                this.headTarget.position = Vector3.Lerp(
+                    this.headTarget.position,
+                    this.xrOrigin.transform.position,
+                    2f * Time.deltaTime
+                );
+            }
+        }
+        finally
+        {
+            this.headRig.weight = 0f;
+        }
+    }
+
+    private async UniTask moveTowardsPlayer()
+    {
+        while(!this.stateTransitionToken.IsCancellationRequested)
+        {
+            // wait until the player is far enough
+            await UniTask.WaitUntil(
+                () => Vector3.Distance(transform.position, this.xrOrigin.transform.position) > 0.8f,
+                cancellationToken: this.stateTransitionToken
+            );
+            try
+            {
+                // move towards the player at most 1 second
+                await UniTask.WhenAny(
+                    this.petNav.MoveTo(this.xrOrigin.transform, this.stateTransitionToken, 0.5f),
+                    UniTask.Delay(3000, cancellationToken: this.stateTransitionToken)
+                );
+            }
+            catch (System.OperationCanceledException e)
+            {
+                if(this.stateMachine.State == State.Following)
+                {
+                    Debug.Log("Keep following player...");
+                    continue;
+                }
+                Debug.Log($"Move towards player action was cancelled: {e.Message}");
+            }       
+        }
     }
 
     private async UniTask inSearchingFood()
@@ -655,6 +719,24 @@ public class Pet : MonoBehaviour
                 animator.SetBool("isLeaping", false);
             }
             await UniTask.Yield();
+        }
+    }
+
+    public void TriggerFollow()
+    {
+        if(this.stateMachine.State == State.Following)
+        {
+            this.stateTransitionTokenSource.Cancel();
+            this.stateMachine.Fire(Trigger.StopFollowing);
+        }
+        else if(this.stateMachine.CanFire(Trigger.Follow))
+        {
+            this.stateTransitionTokenSource.Cancel();
+            this.stateMachine.Fire(Trigger.Follow);
+        }
+        else
+        {
+            Debug.LogWarning($"Cannot trigger follow from state {this.stateMachine.State}");
         }
     }
 }

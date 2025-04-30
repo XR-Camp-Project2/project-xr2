@@ -43,6 +43,13 @@ public class PanelButtons : MonoBehaviour
     public void onFollowButtonClicked()
     {
         // 讓寵物跟隨玩家（與招手手勢相同）
+        var pet = GameObject.FindGameObjectWithTag("Pet")?.GetComponent<Pet>();
+        if(pet == null)
+        {
+            Debug.LogError("Pet not found in the scene.");
+            return;
+        }
+        pet.TriggerFollow();
     }
 
     public void onFeedButtonClicked()
