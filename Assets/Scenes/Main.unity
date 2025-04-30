@@ -732,7 +732,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2296141232796561049, guid: 37c47f9928e3fef4bb9a9ffaafab5526, type: 3}
       propertyPath: hideMesh
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2296141232796561049, guid: 37c47f9928e3fef4bb9a9ffaafab5526, type: 3}
       propertyPath: Colliders
@@ -2282,6 +2282,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c182df60325fd243a0f6496f87df541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &561027362 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2744487371060551226, guid: e6e167d8d121dba428bfbd28e7436bca, type: 3}
+  m_PrefabInstance: {fileID: 561027360}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f8fcfb654d1ae48933a56d13a5367c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &587760041
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2826,6 +2837,10 @@ PrefabInstance:
       propertyPath: _cameraRig
       value: 
       objectReference: {fileID: 375324842}
+    - target: {fileID: 1181644838449443592, guid: d99abf984bb6bf64a82e25385baa274e, type: 3}
+      propertyPath: characterPrefab
+      value: 
+      objectReference: {fileID: 4811747414282056001, guid: b386f3fd5eb73754e94fc245282bd453, type: 3}
     - target: {fileID: 1181644838449443592, guid: d99abf984bb6bf64a82e25385baa274e, type: 3}
       propertyPath: passthroughCameraManager
       value: 
@@ -3638,6 +3653,8 @@ GameObject:
   - component: {fileID: 1687747854}
   - component: {fileID: 1687747852}
   - component: {fileID: 1687747855}
+  - component: {fileID: 1687747856}
+  - component: {fileID: 1687747857}
   m_Layer: 0
   m_Name: Gesture Manager
   m_TagString: Untagged
@@ -3730,6 +3747,76 @@ MonoBehaviour:
       m_Calls: []
   m_MinimumHoldTime: 0.2
   m_GestureDetectionInterval: 0.1
+--- !u!114 &1687747856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687747851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf93899325d5df74eb9176e097ee3d4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HandTrackingEvents: {fileID: 381356147}
+  m_HandShapeOrPose: {fileID: 11400000, guid: 0936b15d26a699f478a409df4ac61b0b, type: 2}
+  m_TargetTransform: {fileID: 0}
+  m_GesturePerformed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 561027362}
+        m_TargetAssemblyTypeName: PanelButtons, Assembly-CSharp
+        m_MethodName: onFollowButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_GestureEnded:
+    m_PersistentCalls:
+      m_Calls: []
+  m_MinimumHoldTime: 0.2
+  m_GestureDetectionInterval: 0.1
+--- !u!114 &1687747857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687747851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf93899325d5df74eb9176e097ee3d4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HandTrackingEvents: {fileID: 381356138}
+  m_HandShapeOrPose: {fileID: 11400000, guid: 0936b15d26a699f478a409df4ac61b0b, type: 2}
+  m_TargetTransform: {fileID: 0}
+  m_GesturePerformed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 561027362}
+        m_TargetAssemblyTypeName: PanelButtons, Assembly-CSharp
+        m_MethodName: onFollowButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_GestureEnded:
+    m_PersistentCalls:
+      m_Calls: []
+  m_MinimumHoldTime: 0.2
+  m_GestureDetectionInterval: 0.1
 --- !u!1001 &1827811608
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3741,6 +3828,10 @@ PrefabInstance:
     - target: {fileID: 984354080134106425, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
       propertyPath: m_Name
       value: MRUK
+      objectReference: {fileID: 0}
+    - target: {fileID: 3613868102660323786, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
+      propertyPath: SceneSettings.RoomIndex
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 8047981335285221976, guid: c2e00db6d2dfa42ac8d821db8d493a44, type: 3}
       propertyPath: m_LocalPosition.x

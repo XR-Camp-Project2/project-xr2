@@ -281,7 +281,7 @@ public class QrCodeDisplayManager : MonoBehaviour
         _characterState = CharacterState.Spawning;
         
         // 實例化角色
-        _spawnedCharacter = Instantiate(characterPrefab, center, poseRot);
+        _spawnedCharacter = Instantiate(characterPrefab, center, Quaternion.identity);
         
         // 獲取動畫器並開始播放動畫
         var animator = _spawnedCharacter.GetComponent<Animator>();
