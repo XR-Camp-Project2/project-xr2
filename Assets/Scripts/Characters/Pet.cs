@@ -296,6 +296,7 @@ public class Pet : MonoBehaviour
         if (TableBedLocator.Instance != null)
         {
             TableBedLocator.Instance.OnBedFound += this.setupBed;
+            TableBedLocator.Instance.RescanRoom();
         }
         else
         {
