@@ -6,9 +6,15 @@ using System.Threading;
 using Unity.XR.CoreUtils;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.AI;
+using LitMotion;
+using LitMotion.Extensions;
+using UnityEngine.Animations.Rigging;
 
 public class Pet : MonoBehaviour
 {
+    const string FOOD_TAG = "Food";
+
     private class TimeBasedEscapeTokenSource
     {
         private CancellationTokenSource tokenSource;
@@ -197,6 +203,7 @@ public class Pet : MonoBehaviour
         Upset,
         Squatting,
         Leaping,
+        SearchingFood,
     }
 
     public enum Trigger
@@ -214,6 +221,8 @@ public class Pet : MonoBehaviour
         Standup,
         Jump,
         Land,
+        StartSearchingFood,
+        GiveUpSearchingFood,
     }
 
     public PetStats petStats;
@@ -225,6 +234,11 @@ public class Pet : MonoBehaviour
     public Transform bed;
 
 
+    [SerializeField]
+    private Transform rightHandTarget;
+    [SerializeField]
+    private Rig rightHandRig;
+
     public StateMachine<State, Trigger> StateMachine => this.stateMachine;
     private StateMachine<State, Trigger> stateMachine;
     private CancellationTokenSource stateTransitionTokenSource;
@@ -235,6 +249,8 @@ public class Pet : MonoBehaviour
 
     private async UniTaskVoid Start()
     {
+        Debug.Assert(this.rightHandTarget != null, "Right hand target is not assigned.");
+        Debug.Assert(this.rightHandRig != null, "Right hand rig is not assigned.");
         this.petNav = GetComponent<PetNav>();
         this.xrOrigin = FindFirstObjectByType<XROrigin>();
         this.setupStats();
@@ -294,11 +310,11 @@ public class Pet : MonoBehaviour
             .OnEntry(() => { Debug.Log("Entering Idle state"); })
             .Permit(Trigger.Follow, State.Following)
             .Permit(Trigger.Grab, State.Grabbed)
-            .Permit(Trigger.Eat, State.Eating)
             .Permit(Trigger.GotoSleep, State.Sleeping)
             .Permit(Trigger.Upset, State.Upset)
             .Permit(Trigger.Squat, State.Squatting)
-            .Permit(Trigger.Jump, State.Leaping);
+            .Permit(Trigger.Jump, State.Leaping)
+            .Permit(Trigger.StartSearchingFood, State.SearchingFood);
 
         this.stateMachine.Configure(State.Sleeping)
             .OnEntry(() => { Debug.Log("Entering Sleep state"); })
@@ -317,7 +333,6 @@ public class Pet : MonoBehaviour
             .OnEntry(() => { Debug.Log("Entering Following state"); })
             .Permit(Trigger.StopFollowing, State.Idle)
             .Permit(Trigger.Grab, State.Grabbed)
-            .Permit(Trigger.Eat, State.Eating)
             .Permit(Trigger.Upset, State.Upset);
 
         this.stateMachine.Configure(State.Eating)
@@ -328,6 +343,11 @@ public class Pet : MonoBehaviour
         this.stateMachine.Configure(State.Leaping)
             .OnEntry(() => { Debug.Log("Entering Jumping state"); })
             .Permit(Trigger.Land, State.Idle);
+
+        this.stateMachine.Configure(State.SearchingFood)
+            .OnEntry(() => { Debug.Log("Entering SearchingFood state"); })
+            .Permit(Trigger.Eat, State.Eating)
+            .Permit(Trigger.GiveUpSearchingFood, State.Idle);
     }
 
     private void subscribeHandGestureEvents()
@@ -371,21 +391,39 @@ public class Pet : MonoBehaviour
 
             if (this.stateMachine.IsInState(State.Idle))
             {
-                await this.inIdle();
+                try
+                {
+                    await this.inIdle();
+                }
+                catch (System.OperationCanceledException e)
+                {
+                }
                 continue;
             }
 
-            switch (this.stateMachine.State)
+            try
             {
-                case State.Following:
-                    await this.inFollowing();
-                    break;
-                case State.Grabbed:
-                    // Handle grabbed state
-                    break;
-                case State.Eating:
-                    // Handle eating state
-                    break;
+                switch (this.stateMachine.State)
+                {
+                    case State.Following:
+                        await this.inFollowing();
+                        break;
+                    case State.Grabbed:
+                        // Handle grabbed state
+                        break;
+                    case State.Eating:
+                        await this.inEating();
+                        break;
+                    case State.SearchingFood:
+                        await this.inSearchingFood();
+                        break;
+                    default:
+                        Debug.LogWarning($"Unhandled state: {this.stateMachine.State}");
+                        break;
+                }
+            }
+            catch (System.OperationCanceledException e)
+            {
             }
         }
     }
@@ -402,7 +440,14 @@ public class Pet : MonoBehaviour
                 Debug.Log($"Action {i}: {this.actions[i].GetType().Name} with utility: {utilities[i]}");
             }
             Debug.Log($"Picked action: {pickedAction.GetType().Name}");
-            await pickedAction.Execute(this.stateTransitionToken);
+            try
+            {
+                await pickedAction.Execute(this.stateTransitionToken);
+            }
+            catch (System.OperationCanceledException e)
+            {
+                Debug.Log($"Action {pickedAction.GetType().Name} was cancelled: {e.Message}");
+            }
         }
     }
 
@@ -410,6 +455,84 @@ public class Pet : MonoBehaviour
     {
         await this.petNav.MoveTo(this.xrOrigin.transform, this.stateTransitionToken);
         this.stateMachine.Fire(Trigger.StopFollowing);
+    }
+
+    private async UniTask inSearchingFood()
+    {
+        float distanceFromFood = 0.5f;
+        while (!this.stateTransitionToken.IsCancellationRequested)
+        {
+            await UniTask.Delay(1000, cancellationToken: this.stateTransitionToken);
+            var food = GameObject.FindGameObjectsWithTag(FOOD_TAG).FirstOrDefault();
+            if (food != null)
+            {
+                var targetPosition = food.transform.position;
+                if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, distanceFromFood, NavMesh.AllAreas))
+                {
+                    Debug.Log("Found food, moving to it.");
+                    await this.petNav.MoveTo(hit.position, this.stateTransitionToken);
+                    this.stateMachine.Fire(Trigger.Eat);
+                    return;
+                }
+                else
+                {
+                    Debug.LogWarning($"No valid NavMesh position found near {targetPosition}, fallback to Idle state.");
+                    this.stateMachine.Fire(Trigger.GiveUpSearchingFood);
+                    return;
+                }
+            }
+            else
+            {
+                Debug.Log("No food found, wandering around...");
+                await this.petNav.moveToRandomPoint(this.stateTransitionToken);
+            }
+        }
+    }
+
+    private async UniTask inEating()
+    {
+        var food = GameObject.FindGameObjectsWithTag(FOOD_TAG)
+            .OrderBy((go) => Vector3.Distance(go.transform.position, this.transform.position))
+            .First();
+        if (food == null)
+        {
+            Debug.LogWarning("No food found, returning to Idle state.");
+            this.stateMachine.Fire(Trigger.GiveUpSearchingFood);
+            return;
+        }
+
+        if (Vector3.Distance(this.transform.position, food.transform.position) > 0.5f)
+        {
+            var targetPosition = food.transform.position + (food.transform.position - this.transform.position).normalized * 0.3f;
+            await this.petNav.MoveTo(targetPosition, this.stateTransitionToken);
+        }
+
+        this.rightHandRig.weight = 1f;
+        var rightHandOriginalPosition = this.rightHandTarget.position;
+        try
+        {
+            await LMotion.Create(this.rightHandTarget.position, food.transform.position, 0.5f)
+                .WithEase(Ease.InBack)
+                .BindToPosition(this.rightHandTarget)
+                .AddTo(gameObject);
+
+            // TODO: play eating animation?
+            await UniTask.Delay(2000, cancellationToken: this.stateTransitionToken);
+            Destroy(food);
+
+        }
+        finally
+        {
+            this.rightHandRig.weight = 0f;
+            this.rightHandTarget.position = rightHandOriginalPosition;
+            this.petStats.Hunger -= 30;
+            this.petStats.Happiness += 10;
+            if (this.petStats.Hunger < 0)
+            {
+                this.petStats.Hunger = 0;
+            }
+            this.stateMachine.Fire(Trigger.FinishEating);
+        }
     }
 
     private async UniTask updatePetStats()
@@ -432,6 +555,14 @@ public class Pet : MonoBehaviour
             if (this.flip(0.1f))
             {
                 this.petStats.Happiness -= 1;
+            }
+
+            // TODO: use function to calculate probability of being hungry?
+            if (this.petStats.Hunger > 10 && this.stateMachine.CanFire(Trigger.StartSearchingFood))
+            {
+                Debug.Log("So hungry, searching for food...");
+                this.stateTransitionTokenSource.Cancel();
+                this.stateMachine.Fire(Trigger.StartSearchingFood);
             }
         }
     }
