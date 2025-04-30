@@ -617,7 +617,7 @@ public class Pet : MonoBehaviour
             if (!agent.isOnNavMesh)
             {
                 animator.SetBool("isLeaping", true);
-                var g = 9.8f; // FIXME: hard-coded gravity
+                var g = Mathf.Abs(Physics.gravity.y); // Use global gravity setting
                 var velocity = Vector3.zero;
                 while (true)
                 {
