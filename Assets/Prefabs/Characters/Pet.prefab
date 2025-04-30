@@ -76,12 +76,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petStats: {fileID: 11400000, guid: 2aeb507e59e4d434a84fe6ff405fcd9c, type: 2}
-  followGesture: {fileID: 0}
   teleportGesture: {fileID: 0}
   pointAtGesture: {fileID: 0}
   bed: {fileID: 0}
   rightHandTarget: {fileID: 8215155403082163084}
   rightHandRig: {fileID: 1038116606491012900}
+  headTarget: {fileID: 7241819273375978057}
+  headRig: {fileID: 3133194633807540428}
 --- !u!114 &7743817877884381223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,6 +213,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3133194633807540428 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1253663450518864209, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+  m_PrefabInstance: {fileID: 4187995463256076701}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70b342d8ce5c2fd48b8fa3147d48d1d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &3640530783736477205 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 620226652830418824, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
@@ -249,6 +261,11 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!4 &7241819273375978057 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6818067128239023060, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
+  m_PrefabInstance: {fileID: 4187995463256076701}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8215155403082163084 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5196212785398452753, guid: 25049e6ed0dcd974291cb91a76989913, type: 3}
