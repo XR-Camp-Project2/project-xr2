@@ -193,6 +193,27 @@ public class Pet : MonoBehaviour
         }
     }
 
+    private class StretchAction : PetAction
+    {
+        private Pet pet;
+
+        public void Setup(Pet pet)
+        {
+            this.pet = pet;
+        }
+
+        public float CalculateUtility()
+        {
+            return 100 - this.pet.petStats.Health;
+        }
+
+        public async UniTask Execute(CancellationToken token)
+        {
+            var src = new TimeBasedEscapeTokenSource(token);
+
+        }
+    }
+
     public enum State
     {
         Idle,

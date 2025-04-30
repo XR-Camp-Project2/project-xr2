@@ -4303,14 +4303,62 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7519798450298841698, guid: 91fb60f64fb559545af8a905a9626469, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7519798450298841698, guid: 91fb60f64fb559545af8a905a9626469, type: 3}
       propertyPath: arPlaneManager
       value: 
       objectReference: {fileID: 2131815774}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3512208835814877336, guid: 91fb60f64fb559545af8a905a9626469, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4922003087645903789}
   m_SourcePrefab: {fileID: 100100000, guid: 91fb60f64fb559545af8a905a9626469, type: 3}
+--- !u!1 &4922003087645903788 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3512208835814877336, guid: 91fb60f64fb559545af8a905a9626469, type: 3}
+  m_PrefabInstance: {fileID: 4922003087645903787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4922003087645903789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4922003087645903788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e78cc1d50b327bb49b31a40bfbe1ce93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildOnSceneLoaded: 1
+  CollectGeometry: 1
+  CollectObjects: 2
+  AgentRadius: 0.2
+  AgentHeight: 0.5
+  AgentClimb: 0.04
+  AgentMaxSlope: 5.5
+  Agents: []
+  NavigableSurfaces: -1
+  SceneObstacles: 0
+  Layers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  AgentIndex: 0
+  UseSceneData: 1
+  CustomAgent: 1
+  OverrideVoxelSize: 0
+  VoxelSize: 0
+  OverrideTileSize: 0
+  TileSize: 256
+  GenerateLinks: 0
+  <OnNavMeshInitialized>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

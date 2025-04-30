@@ -6,6 +6,8 @@ using UnityEngine;
 using Meta.XR;
 using PassthroughCameraSamples;
 using UnityEngine.InputSystem;
+using Meta.XR.MRUtilityKit;
+using UnityEngine.AI;
 
 /// <summary>
 /// 增強型 QR 碼識別與角色顯示管理系統
@@ -283,6 +285,12 @@ public class QrCodeDisplayManager : MonoBehaviour
         
         // 實例化角色
         _spawnedCharacter = Instantiate(characterPrefab, center, Quaternion.identity);
+        SceneNavigation sceneNavigation = FindFirstObjectByType<SceneNavigation>();
+        if (sceneNavigation != null)
+        {
+            sceneNavigation.Agents.Add(_spawnedCharacter.GetComponent<NavMeshAgent>());
+            sceneNavigation.BuildSceneNavMesh();
+        }
         
         // 獲取動畫器並開始播放動畫
         var animator = _spawnedCharacter.GetComponent<Animator>();

@@ -10,13 +10,16 @@ public class AutoGenerateNavMesh : MonoBehaviour
 
     void Start()
     {
+        this.arPlaneManager.trackablesChanged.AddListener((_) => this.generateMeshes());
         this.generateMeshes();
     }
 
-    private void generateMeshes() {
+    private void generateMeshes()
+    {
         foreach (var plane in this.arPlaneManager.trackables)
         {
             var surface = plane.gameObject.AddComponent<NavMeshSurface>();
+            surface.collectObjects = CollectObjects.All;
             surface.BuildNavMesh();
         }
 
