@@ -12,11 +12,17 @@ public class PanelButtons : MonoBehaviour
     [SerializeField] private Sprite fixedButtonOnSprite;
     [SerializeField] private Sprite fixedButtonOffSprite;
 
+    [Header("跟隨按鈕")]
+    [SerializeField] private GameObject followButton;
+    [SerializeField] private Sprite followButtonOnSprite;
+    [SerializeField] private Sprite followButtonOffSprite;
+
     [Header("餵食按鈕")]
     [SerializeField] private GameObject[] foodPrefabs;
 
     private GameObject petObject;
     private bool isFixed = false;
+    private bool isFollowing = false;
 
     public void Start()
     {
@@ -44,10 +50,23 @@ public class PanelButtons : MonoBehaviour
     {
         // 讓寵物跟隨玩家（與招手手勢相同）
         var pet = GameObject.FindGameObjectWithTag("Pet")?.GetComponent<Pet>();
+        Image buttonImage = followButton.GetComponent<Image>();
+
         if(pet == null)
         {
             Debug.LogError("Pet not found in the scene.");
             return;
+        }
+
+        if (!isFollowing)
+        {
+            buttonImage.sprite = followButtonOnSprite;
+            isFollowing = true;
+        }
+        else
+        {
+            buttonImage.sprite = followButtonOffSprite;
+            isFollowing = false;
         }
         pet.TriggerFollow();
     }

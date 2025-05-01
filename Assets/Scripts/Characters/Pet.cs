@@ -15,6 +15,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class Pet : MonoBehaviour
 {
     const string FOOD_TAG = "Food";
+    const int STRETCH_AUDIO_INDEX = 4;
 
     private class TimeBasedEscapeTokenSource
     {
@@ -157,19 +158,23 @@ public class Pet : MonoBehaviour
 
         public async UniTask Execute(CancellationToken token)
         {
-            await this.pet.petNav.MoveTo(this.pet.bed, token);
-            // trigger sleep animation
-            this.pet.stateMachine.Fire(Trigger.GotoSleep);
+            try {
+                await this.pet.petNav.MoveTo(this.pet.bed, token);
+                // trigger sleep animation
+                this.pet.stateMachine.Fire(Trigger.GotoSleep);
 
-            var src = new TimeBasedEscapeTokenSource(token);
-            while (!src.IsCancelled)
-            {
-                await UniTask.Delay(1000, cancellationToken: token);
-                // health is increased more when sleeping
-                this.pet.petStats.Health += 5;
+                var src = new TimeBasedEscapeTokenSource(token);
+                while (!src.IsCancelled)
+                {
+                    await UniTask.Delay(1000, cancellationToken: token);
+                    // health is increased more when sleeping
+                    this.pet.petStats.Health += 5;
+                }
+            } finally {
+                if(this.pet.stateMachine.CanFire(Trigger.WakeUp))
+                    this.pet.stateMachine.Fire(Trigger.WakeUp);
+                await UniTask.Delay(1500, cancellationToken: token);
             }
-
-            this.pet.stateMachine.Fire(Trigger.WakeUp);
         }
     }
 
@@ -184,7 +189,7 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
-            return this.pet.petStats.Health + (50 - this.pet.petStats.Hunger);
+            return this.pet.petStats.Health + (40 - this.pet.petStats.Hunger);
         }
 
         public async UniTask Execute(CancellationToken token)
@@ -205,12 +210,37 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
+            if (this.pet.petStats.Health < 50) {
+                return 100;
+            }
+            if (Random.Range(0f, 1f) < 0.1f) {
+                return 100;
+            }
             return 100 - this.pet.petStats.Health;
         }
 
         public async UniTask Execute(CancellationToken token)
         {
-            var src = new TimeBasedEscapeTokenSource(token);
+            // FIXME: don't call animator directly here
+            var animator = this.pet.GetComponentInChildren<Animator>();
+            var audioManager = FindFirstObjectByType<AudioManager>();
+            animator.SetBool("isStrech", true);
+            try {
+                await UniTask.WaitUntil(
+                    () => animator.GetCurrentAnimatorStateInfo(0).IsName("Strech"),
+                    cancellationToken: token
+                );
+                audioManager.Play("TALK", STRETCH_AUDIO_INDEX, 0.5f);
+                this.pet.petStats.Happiness += 5;
+                this.pet.petStats.Health += 20;
+            } finally {
+                animator.SetBool("isStrech", false);
+                audioManager.Stop("TALK", STRETCH_AUDIO_INDEX);
+                await UniTask.WaitUntil(
+                    () => !animator.GetCurrentAnimatorStateInfo(0).IsName("Strech"),
+                    cancellationToken: token
+                );
+            }
         }
     }
 
@@ -292,6 +322,7 @@ public class Pet : MonoBehaviour
         this.actions.Add(new WanderAction());
         this.actions.Add(new UpsetAction());
         this.actions.Add(new SquatAction());
+        this.actions.Add(new StretchAction());
         foreach (var action in this.actions)
         {
             action.Setup(this);
@@ -612,7 +643,7 @@ public class Pet : MonoBehaviour
         }
 
         this.rightHandRig.weight = 1f;
-        var rightHandOriginalPosition = this.rightHandTarget.position;
+        var rightHandOriginalLocalPosition = this.rightHandTarget.localPosition;
         try
         {
             // Turn to food
@@ -622,7 +653,7 @@ public class Pet : MonoBehaviour
                 .BindToRotation(this.transform)
                 .AddTo(gameObject);
             await UniTask.Delay(3000, cancellationToken: this.stateTransitionToken);
-            var originalPosition = this.rightHandTarget.position;
+            // Try grab food
             await LMotion.Create(this.rightHandTarget.position, food.transform.position, 0.5f)
                 .WithEase(Ease.InBack)
                 .BindToPosition(this.rightHandTarget)
@@ -639,10 +670,11 @@ public class Pet : MonoBehaviour
                 Destroy(rb);
             }
             await UniTask.Delay(2000, cancellationToken: this.stateTransitionToken);
+            // Move food to mouth
             await LMotion.Create(
-                this.rightHandTarget.position,
-                this.head.position + transform.forward * 0.1f,
-                0.5f)
+                    this.rightHandTarget.position,
+                    this.head.position + transform.forward * 0.1f,
+                    0.5f)
                 .WithEase(Ease.OutBack)
                 .BindToPosition(this.rightHandTarget)
                 .AddTo(gameObject);
@@ -650,15 +682,16 @@ public class Pet : MonoBehaviour
             audioManager.Play("SFX", 0, 0.5f);
             await UniTask.Delay(3000, cancellationToken: this.stateTransitionToken);
             Destroy(food);
-            await LMotion.Create(this.rightHandTarget.position, originalPosition, 0.5f)
+            // Move hand back to original position
+            await LMotion.Create(this.rightHandTarget.localPosition, rightHandOriginalLocalPosition, 0.5f)
                 .WithEase(Ease.OutBack)
-                .BindToPosition(this.rightHandTarget)
+                .BindToLocalPosition(this.rightHandTarget)
                 .AddTo(gameObject);
         }
         finally
         {
             this.rightHandRig.weight = 0f;
-            this.rightHandTarget.position = rightHandOriginalPosition;
+            this.rightHandTarget.localPosition = rightHandOriginalLocalPosition;
             this.petStats.Hunger -= 30;
             this.petStats.Happiness += 10;
             if (this.petStats.Hunger < 0)
@@ -692,7 +725,7 @@ public class Pet : MonoBehaviour
             }
 
             // TODO: use function to calculate probability of being hungry?
-            if (this.petStats.Hunger > 10 && this.stateMachine.CanFire(Trigger.StartSearchingFood))
+            if (this.petStats.Hunger > 70 && this.stateMachine.CanFire(Trigger.StartSearchingFood))
             {
                 Debug.Log("So hungry, searching for food...");
                 this.stateTransitionTokenSource.Cancel();

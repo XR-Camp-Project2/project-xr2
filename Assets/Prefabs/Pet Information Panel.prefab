@@ -3538,6 +3538,9 @@ MonoBehaviour:
   fixedButton: {fileID: 5025706392307953299}
   fixedButtonOnSprite: {fileID: 21300000, guid: 1716e9687257aae4eb358498f66be7b5, type: 3}
   fixedButtonOffSprite: {fileID: 21300000, guid: 25d9a8a0dbf59fc4f984278a85c3cd09, type: 3}
+  followButton: {fileID: 3520675098265981281}
+  followButtonOnSprite: {fileID: 21300000, guid: b35ba09f075485044b296a60ef53eda1, type: 3}
+  followButtonOffSprite: {fileID: 21300000, guid: 0e627a5fef176374eb6e4775d7d392b9, type: 3}
   foodPrefabs:
   - {fileID: 6881010146685120907, guid: b49d3d8ae3a4e5043930d8a5babfb5f9, type: 3}
   - {fileID: 8875963046925556243, guid: 573b24fe15325ac4c8637a32894966f4, type: 3}
