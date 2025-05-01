@@ -22,11 +22,30 @@ public class PanelButtons : MonoBehaviour
 
     private GameObject petObject;
     private bool isFixed = false;
-    private bool isFollowing = false;
 
-    public void Start()
+    void Start()
     {
         
+    }
+
+    void Update()
+    {
+        Image buttonImage = followButton.GetComponent<Image>();
+        Pet pet = GameObject.FindGameObjectWithTag("Pet")?.GetComponent<Pet>();
+
+        if(pet == null)
+        {
+            Debug.LogError("Pet not found in the scene.");
+            return;
+        }
+        if (pet.StateMachine.State == Pet.State.Following)
+        {
+            buttonImage.sprite = followButtonOnSprite;
+        }
+        else
+        {
+            buttonImage.sprite = followButtonOffSprite;
+        }
     }
 
     public void onFixedButtonClicked()
@@ -50,24 +69,6 @@ public class PanelButtons : MonoBehaviour
     {
         // 讓寵物跟隨玩家（與招手手勢相同）
         var pet = GameObject.FindGameObjectWithTag("Pet")?.GetComponent<Pet>();
-        Image buttonImage = followButton.GetComponent<Image>();
-
-        if(pet == null)
-        {
-            Debug.LogError("Pet not found in the scene.");
-            return;
-        }
-
-        if (!isFollowing)
-        {
-            buttonImage.sprite = followButtonOnSprite;
-            isFollowing = true;
-        }
-        else
-        {
-            buttonImage.sprite = followButtonOffSprite;
-            isFollowing = false;
-        }
         pet.TriggerFollow();
     }
 
