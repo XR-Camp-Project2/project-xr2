@@ -518,18 +518,30 @@ public class Pet : MonoBehaviour
 
     private async UniTask moveTowardsPlayer()
     {
+        var target = Camera.main;
+
         while(!this.stateTransitionToken.IsCancellationRequested)
         {
+            System.Func<Vector3> targetPos = () => {
+                var ret = target.transform.position;
+                ret.y = transform.position.y;
+                return ret; 
+            };
             // wait until the player is far enough
             await UniTask.WaitUntil(
-                () => Vector3.Distance(transform.position, this.xrOrigin.transform.position) > 0.4f,
+                () => Vector3.Distance(transform.position, targetPos()) > 0.4f,
                 cancellationToken: this.stateTransitionToken
             );
+
             try
             {
+                var moveToPos = targetPos();
+                if(NavMesh.SamplePosition(moveToPos, out NavMeshHit hit, 0.25f, -1)) {
+                    moveToPos = hit.position;
+                }
                 // move towards the player at most 1 second
                 await UniTask.WhenAny(
-                    this.petNav.MoveTo(this.xrOrigin.transform, this.stateTransitionToken, 0.25f),
+                    this.petNav.MoveTo(moveToPos, this.stateTransitionToken, 0.25f),
                     UniTask.Delay(3000, cancellationToken: this.stateTransitionToken)
                 );
             }
