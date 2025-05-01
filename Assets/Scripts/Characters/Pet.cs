@@ -522,14 +522,14 @@ public class Pet : MonoBehaviour
         {
             // wait until the player is far enough
             await UniTask.WaitUntil(
-                () => Vector3.Distance(transform.position, this.xrOrigin.transform.position) > 0.8f,
+                () => Vector3.Distance(transform.position, this.xrOrigin.transform.position) > 0.4f,
                 cancellationToken: this.stateTransitionToken
             );
             try
             {
                 // move towards the player at most 1 second
                 await UniTask.WhenAny(
-                    this.petNav.MoveTo(this.xrOrigin.transform, this.stateTransitionToken, 0.5f),
+                    this.petNav.MoveTo(this.xrOrigin.transform, this.stateTransitionToken, 0.25f),
                     UniTask.Delay(3000, cancellationToken: this.stateTransitionToken)
                 );
             }
