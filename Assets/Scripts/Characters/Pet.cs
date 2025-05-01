@@ -11,10 +11,12 @@ using LitMotion;
 using LitMotion.Extensions;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.InputSystem;
 
 public class Pet : MonoBehaviour
 {
     const string FOOD_TAG = "Food";
+    const int HUMMING_AUDIO_INDEX = 1;
     const int STRETCH_AUDIO_INDEX = 4;
 
     private class TimeBasedEscapeTokenSource
@@ -78,8 +80,12 @@ public class Pet : MonoBehaviour
 
         public async UniTask Execute(CancellationToken token)
         {
+            var audioManager = FindFirstObjectByType<AudioManager>();
             var src = new TimeBasedEscapeTokenSource(token);
-            await UniTask.WaitUntil(() => src.IsCancelled, cancellationToken: token);
+            if(this.pet.flip(0.3f)) {
+                this.pet.humming(src.Token).Forget();
+            }
+            await UniTask.WaitUntil(() => src.IsCancelled, cancellationToken: src.Token);
         }
     }
 
@@ -96,7 +102,7 @@ public class Pet : MonoBehaviour
         {
             if (this.pet.flip(0.1f))
             {
-                return 300;
+                return 100;
             }
             return 100 - this.pet.petStats.Happiness;
         }
@@ -125,6 +131,10 @@ public class Pet : MonoBehaviour
 
         public float CalculateUtility()
         {
+            if(this.pet.flip(0.1f))
+            {
+                return 100;
+            }
             return 100 - this.pet.petStats.Happiness;
         }
 
@@ -194,6 +204,9 @@ public class Pet : MonoBehaviour
 
         public async UniTask Execute(CancellationToken token)
         {
+            if(this.pet.flip(0.3f)) {
+                this.pet.humming(token).Forget();
+            }
             await this.pet.petNav.moveToRandomPoint(token);
             Debug.Log("Exiting WanderAction");
         }
@@ -213,7 +226,7 @@ public class Pet : MonoBehaviour
             if (this.pet.petStats.Health < 50) {
                 return 100;
             }
-            if (Random.Range(0f, 1f) < 0.1f) {
+            if (this.pet.flip(0.1f)) {
                 return 100;
             }
             return 100 - this.pet.petStats.Health;
@@ -721,7 +734,7 @@ public class Pet : MonoBehaviour
 
             if (this.flip(0.1f))
             {
-                this.petStats.Happiness -= 1;
+                this.petStats.Happiness -= 10;
             }
 
             // TODO: use function to calculate probability of being hungry?
@@ -817,6 +830,22 @@ public class Pet : MonoBehaviour
         else
         {
             Debug.LogWarning($"Cannot trigger follow from state {this.stateMachine.State}");
+        }
+    }
+
+    private async UniTask humming(CancellationToken token)
+    {
+        var audioManager = FindFirstObjectByType<AudioManager>();
+        audioManager.Play("TALK", HUMMING_AUDIO_INDEX, 0.5f);
+        try
+        {
+            await UniTask.WaitUntil(() => token.IsCancellationRequested);
+        }
+        finally
+        {
+            audioManager.FadeOut("TALK", HUMMING_AUDIO_INDEX, duration: 1);
+            await UniTask.Delay(1000);
+            audioManager.Stop("TALK", HUMMING_AUDIO_INDEX);
         }
     }
 }
