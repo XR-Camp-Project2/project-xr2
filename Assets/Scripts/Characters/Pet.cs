@@ -10,6 +10,7 @@ using UnityEngine.AI;
 using LitMotion;
 using LitMotion.Extensions;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class Pet : MonoBehaviour
 {
@@ -258,6 +259,8 @@ public class Pet : MonoBehaviour
     [SerializeField]
     private Rig rightHandRig;
     [SerializeField]
+    private Transform head;
+    [SerializeField]
     private Transform headTarget;
     [SerializeField]
     private Rig headRig;
@@ -274,6 +277,7 @@ public class Pet : MonoBehaviour
     {
         Debug.Assert(this.rightHandTarget != null, "Right hand target is not assigned.");
         Debug.Assert(this.rightHandRig != null, "Right hand rig is not assigned.");
+        Debug.Assert(this.head != null, "Head is not assigned.");
         Debug.Assert(this.headTarget != null, "Head target is not assigned.");
         Debug.Assert(this.headRig != null, "Head rig is not assigned.");
 
@@ -559,7 +563,7 @@ public class Pet : MonoBehaviour
 
     private async UniTask inSearchingFood()
     {
-        float distanceFromFood = 0.5f;
+        float distanceFromFood = 0.2f;
         while (!this.stateTransitionToken.IsCancellationRequested)
         {
             await UniTask.Delay(1000, cancellationToken: this.stateTransitionToken);
@@ -601,9 +605,9 @@ public class Pet : MonoBehaviour
             return;
         }
 
-        if (Vector3.Distance(this.transform.position, food.transform.position) > 0.5f)
+        if (Vector3.Distance(this.transform.position, food.transform.position) > 0.2f)
         {
-            var targetPosition = food.transform.position + (food.transform.position - this.transform.position).normalized * 0.3f;
+            var targetPosition = food.transform.position + (food.transform.position - this.transform.position).normalized * 0.1f;
             await this.petNav.MoveTo(targetPosition, this.stateTransitionToken);
         }
 
@@ -611,16 +615,45 @@ public class Pet : MonoBehaviour
         var rightHandOriginalPosition = this.rightHandTarget.position;
         try
         {
+            // Turn to food
+            var targetRotation = Quaternion.LookRotation(food.transform.position - this.transform.position);
+            await LMotion.Create(this.transform.rotation, targetRotation, 0.5f)
+                .WithEase(Ease.OutBack)
+                .BindToRotation(this.transform)
+                .AddTo(gameObject);
+            await UniTask.Delay(3000, cancellationToken: this.stateTransitionToken);
+            var originalPosition = this.rightHandTarget.position;
             await LMotion.Create(this.rightHandTarget.position, food.transform.position, 0.5f)
                 .WithEase(Ease.InBack)
                 .BindToPosition(this.rightHandTarget)
                 .AddTo(gameObject);
-
-            // TODO: play eating animation?
+            food.transform.parent = this.rightHandTarget;
+            food.transform.localPosition = Vector3.zero;
+            if(food.TryGetComponent<Rigidbody>(out var rb))
+            {
+                if(food.TryGetComponent<XRGrabInteractable>(out var interactable))
+                {
+                    Destroy(interactable);
+                    await UniTask.Yield(this.stateTransitionToken);
+                }
+                Destroy(rb);
+            }
             await UniTask.Delay(2000, cancellationToken: this.stateTransitionToken);
-            Destroy(food);
+            await LMotion.Create(
+                this.rightHandTarget.position,
+                this.head.position + transform.forward * 0.1f,
+                0.5f)
+                .WithEase(Ease.OutBack)
+                .BindToPosition(this.rightHandTarget)
+                .AddTo(gameObject);
             AudioManager audioManager = FindFirstObjectByType<AudioManager>();
             audioManager.Play("SFX", 0, 0.5f);
+            await UniTask.Delay(3000, cancellationToken: this.stateTransitionToken);
+            Destroy(food);
+            await LMotion.Create(this.rightHandTarget.position, originalPosition, 0.5f)
+                .WithEase(Ease.OutBack)
+                .BindToPosition(this.rightHandTarget)
+                .AddTo(gameObject);
         }
         finally
         {
@@ -717,12 +750,11 @@ public class Pet : MonoBehaviour
             if (!agent.isOnNavMesh)
             {
                 animator.SetBool("isLeaping", true);
-                var g = Mathf.Abs(Physics.gravity.y); // Use global gravity setting
-                var velocity = Vector3.zero;
+                var rb = gameObject.AddComponent<Rigidbody>();
+                rb.useGravity = true;
+                rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 while (true)
                 {
-                    velocity += Vector3.down * (g * Time.deltaTime);
-                    transform.position += velocity * Time.deltaTime;
                     if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 0.5f, NavMesh.AllAreas))
                     {
                         agent.Warp(hit.position);
@@ -730,9 +762,10 @@ public class Pet : MonoBehaviour
                     }
                     await UniTask.Yield(token);
                 }
+                Destroy(rb);
                 animator.SetBool("isLeaping", false);
             }
-            await UniTask.Yield();
+            await UniTask.Yield(token);
         }
     }
 

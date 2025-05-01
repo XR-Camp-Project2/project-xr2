@@ -32,7 +32,7 @@ public class PetPresenter : MonoBehaviour
 
     void Update()
     {
-        var isMoving = this.petNav.Velocity.magnitude > 0.1f;
+        var isMoving = this.petNav.Velocity.magnitude > 0.05f;
         this.animator.SetBool("isWalking", isMoving);
         this.animator.SetBool("isCrawlingIdle", !isMoving);
         this.animator.SetBool("isSleeping", this.pet.StateMachine.State == Pet.State.Sleeping);
@@ -44,7 +44,7 @@ public class PetPresenter : MonoBehaviour
         AudioManager audioManager = FindFirstObjectByType<AudioManager>();
 
         while (true) {
-            if (this.petNav.Velocity.magnitude > 0.1f && !this.animator.GetBool("isLeaping")) {
+            if (this.petNav.Velocity.magnitude > 0.05f && !this.animator.GetBool("isLeaping")) {
                 audioManager.Play("SFX", 2, 0.5f);
                 await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
             }

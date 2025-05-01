@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System.Linq;
 using System.Threading;
 using Unity.AI.Navigation;
 using UnityEngine;
@@ -60,6 +61,14 @@ public class PetNav : MonoBehaviour
 
     public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
     {
+        if(Random.Range(0, 1f) < 0.5f)
+        {
+            var surfaces = FindObjectsByType<NavMeshSurface>(FindObjectsSortMode.None)
+                .ToArray();
+            var selected = surfaces[Random.Range(0, surfaces.Length)];
+            origin = selected.transform.position;
+        }
+
         Vector3 randomDirection = Random.insideUnitSphere * dist;
         randomDirection += origin;
 
