@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BuildOnSceneLoaded: 1
-  CollectGeometry: 0
+  CollectGeometry: 1
   CollectObjects: 0
   AgentRadius: 0.2
   AgentHeight: 0.5

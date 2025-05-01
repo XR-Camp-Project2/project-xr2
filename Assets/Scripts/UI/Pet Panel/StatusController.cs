@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Cysharp.Threading.Tasks;
 
 public class StatusController : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class StatusController : MonoBehaviour
     [SerializeField] private TMP_Text petMoodText;
     [Header("關係顯示文字")]
     [SerializeField] private TMP_Text petRelationshipText;
+    [Header("狀態標籤")]
+    [SerializeField] private TMP_Text petStateLabelText;
 
 
     public enum RelationshipStatus{
@@ -46,6 +49,17 @@ public class StatusController : MonoBehaviour
     
     private float startPositionX = 6.56f;
     private float endPositionX = 0.45f;
+
+    private void Start()
+    {
+        UniTask.Void(async () => {
+            var token = this.GetCancellationTokenOnDestroy();
+            while(!token.IsCancellationRequested) {
+                await UniTask.Delay(100, cancellationToken: token);
+                this.updateStateLabel();
+           }
+        });
+    }
 
     void Update()
     {
@@ -144,4 +158,12 @@ public class StatusController : MonoBehaviour
     }
     return RelationshipStatus.Hostile;
 }
+    private void updateStateLabel() {
+        var pet = FindFirstObjectByType<Pet>();
+        if (pet != null) {
+            Debug.LogWarning("Cannot find pet object in scene.");
+        }
+
+        this.petStateLabelText.text = pet.StateMachine.State.ToString();
+    }
 }
