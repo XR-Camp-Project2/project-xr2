@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9158280427819623857}
   m_Layer: 0
   m_Name: Cucumber Object
-  m_TagString: Food
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 7187317016577091683}
   m_Layer: 0
   m_Name: Cucumber
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
