@@ -44,7 +44,7 @@ public class PetPresenter : MonoBehaviour
         AudioManager audioManager = FindFirstObjectByType<AudioManager>();
 
         while (true) {
-            if (this.petNav.Velocity.magnitude > 0.05f && !this.animator.GetBool("isLeaping")) {
+            if (this.petNav.Velocity.magnitude > 0.05f && this.animator.GetBool("isWalking")) {
                 audioManager.Play("SFX", 2, 0.5f);
                 await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
             }
