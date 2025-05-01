@@ -307,6 +307,10 @@ public class Pet : MonoBehaviour
     private Transform headTarget;
     [SerializeField]
     private Rig headRig;
+    [SerializeField]
+    private Rig waistRig;
+    [SerializeField]
+    private Transform waistTarget;
 
     public StateMachine<State, Trigger> StateMachine => this.stateMachine;
     private StateMachine<State, Trigger> stateMachine;
@@ -323,6 +327,8 @@ public class Pet : MonoBehaviour
         Debug.Assert(this.head != null, "Head is not assigned.");
         Debug.Assert(this.headTarget != null, "Head target is not assigned.");
         Debug.Assert(this.headRig != null, "Head rig is not assigned.");
+        Debug.Assert(this.waistRig != null, "Twist rig is not assigned.");
+        Debug.Assert(this.waistTarget != null, "Twist target is not assigned.");
 
         this.petNav = GetComponent<PetNav>();
         this.xrOrigin = FindFirstObjectByType<XROrigin>();
@@ -618,7 +624,7 @@ public class Pet : MonoBehaviour
                 if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, distanceFromFood, NavMesh.AllAreas))
                 {
                     Debug.Log("Found food, moving to it.");
-                    await this.petNav.MoveTo(hit.position, this.stateTransitionToken);
+                    await this.petNav.MoveTo(hit.position, this.stateTransitionToken, 0.3f);
                     this.stateMachine.Fire(Trigger.Eat);
                     return;
                 }
@@ -651,12 +657,13 @@ public class Pet : MonoBehaviour
 
         if (Vector3.Distance(this.transform.position, food.transform.position) > 0.2f)
         {
-            var targetPosition = food.transform.position + (food.transform.position - this.transform.position).normalized * 0.1f;
-            await this.petNav.MoveTo(targetPosition, this.stateTransitionToken);
+            await this.petNav.MoveTo(food.transform.position, this.stateTransitionToken, 0.2f);
         }
 
+        this.waistRig.weight = 1f;
         this.rightHandRig.weight = 1f;
         var rightHandOriginalLocalPosition = this.rightHandTarget.localPosition;
+        var waistOriginalLocalPosition = this.waistTarget.localPosition;
         try
         {
             // Turn to food
@@ -664,6 +671,11 @@ public class Pet : MonoBehaviour
             await LMotion.Create(this.transform.rotation, targetRotation, 0.5f)
                 .WithEase(Ease.OutBack)
                 .BindToRotation(this.transform)
+                .AddTo(gameObject);
+            // Squat down
+            await LMotion.Create(this.waistTarget.position, this.waistTarget.position - Vector3.up * 1.5f, 0.5f)
+                .WithEase(Ease.OutBack)
+                .BindToPosition(this.waistTarget)
                 .AddTo(gameObject);
             await UniTask.Delay(3000, cancellationToken: this.stateTransitionToken);
             // Try grab food
@@ -683,6 +695,11 @@ public class Pet : MonoBehaviour
                 Destroy(rb);
             }
             await UniTask.Delay(2000, cancellationToken: this.stateTransitionToken);
+            // Stand up
+            await LMotion.Create(this.waistTarget.localPosition, waistOriginalLocalPosition, 0.5f)
+                .WithEase(Ease.OutBack)
+                .BindToLocalPosition(this.waistTarget)
+                .AddTo(gameObject);
             // Move food to mouth
             await LMotion.Create(
                     this.rightHandTarget.position,
@@ -703,14 +720,19 @@ public class Pet : MonoBehaviour
         }
         finally
         {
+            // Reset hand and twist positions
+            this.waistRig.weight = 0f;
             this.rightHandRig.weight = 0f;
             this.rightHandTarget.localPosition = rightHandOriginalLocalPosition;
+            this.waistTarget.localPosition = waistOriginalLocalPosition;
+            // Update pet stats
             this.petStats.Hunger -= 30;
             this.petStats.Happiness += 10;
             if (this.petStats.Hunger < 0)
             {
                 this.petStats.Hunger = 0;
             }
+            // Transition to Idle state
             this.stateMachine.Fire(Trigger.FinishEating);
         }
     }
