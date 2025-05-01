@@ -616,30 +616,40 @@ public class Pet : MonoBehaviour
         float distanceFromFood = 0.2f;
         while (!this.stateTransitionToken.IsCancellationRequested)
         {
-            await UniTask.Delay(1000, cancellationToken: this.stateTransitionToken);
+            await UniTask.Delay(200, cancellationToken: this.stateTransitionToken);
             var food = GameObject.FindGameObjectsWithTag(FOOD_TAG).FirstOrDefault();
-            if (food != null)
-            {
-                var targetPosition = food.transform.position;
-                if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, distanceFromFood, NavMesh.AllAreas))
-                {
-                    Debug.Log("Found food, moving to it.");
-                    await this.petNav.MoveTo(hit.position, this.stateTransitionToken, 0.3f);
-                    this.stateMachine.Fire(Trigger.Eat);
-                    return;
-                }
-                else
-                {
-                    Debug.LogWarning($"No valid NavMesh position found near {targetPosition}, fallback to Idle state.");
-                    this.stateMachine.Fire(Trigger.GiveUpSearchingFood);
-                    return;
-                }
-            }
-            else
+            if (food == null) 
             {
                 Debug.Log("No food found, wandering around...");
                 await this.petNav.moveToRandomPoint(this.stateTransitionToken);
             }
+
+            var targetPosition = food.transform.position;
+            if(Vector3.Distance(this.transform.position, targetPosition) > 3)
+            {
+                Debug.Log($"Food is too far away, destroying it.");
+                Destroy(food);
+                continue;
+            }
+
+            if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, distanceFromFood, NavMesh.AllAreas))
+            {
+                Debug.Log("Found food, moving to it.");
+                await this.petNav.MoveTo(hit.position, this.stateTransitionToken, 0.3f);
+                this.stateMachine.Fire(Trigger.Eat);
+                return;
+            }
+
+            if(NavMesh.SamplePosition(this.transform.position, out hit, distanceFromFood * 2, NavMesh.AllAreas))
+            {
+                Debug.Log($"Food is too far away, moving it closer.");
+                food.transform.position = hit.position + Vector3.up * 0.1f;
+                this.stateMachine.Fire(Trigger.Eat);
+                return;
+            }
+
+            Debug.LogWarning($"Food is too far away and cannot be moved closer.");
+            Destroy(food);
         }
     }
 
