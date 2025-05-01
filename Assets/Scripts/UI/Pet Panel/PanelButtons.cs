@@ -67,8 +67,9 @@ public class PanelButtons : MonoBehaviour
 
     public void onRestButtonClicked()
     {
-        // 播退場動畫
-        
+        // 播音效
+        AudioManager audioManager = FindFirstObjectByType<AudioManager>();
+        audioManager.Play("SFX", 3, 0.5f);
 
         // 刪除寵物物件
         if (GameObject.FindGameObjectWithTag("Pet") != null)
