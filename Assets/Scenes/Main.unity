@@ -4738,8 +4738,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   petStats: {fileID: 11400000, guid: 2aeb507e59e4d434a84fe6ff405fcd9c, type: 2}
-  isLeftHandPatting: 0
-  isRightHandPatting: 0
 --- !u!114 &2131815772
 MonoBehaviour:
   m_ObjectHideFlags: 0

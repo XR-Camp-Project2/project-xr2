@@ -4,8 +4,8 @@ using UnityEngine;
 public class PatHead : MonoBehaviour
 {
     [SerializeField] private PetStats petStats;
-    public bool isLeftHandPatting = false;
-    public bool isRightHandPatting = false;
+    public static bool isLeftHandPatting = false;
+    public static bool isRightHandPatting = false;
 
     void Start()
     {
